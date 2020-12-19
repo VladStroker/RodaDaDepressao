@@ -128,6 +128,13 @@ public class Main {
 		}
 	}
 	
+	private static void printPoints(SystemCommands game) {
+		String[] names = game.getNames();
+		for(int i = 0 ; i < game.getContestant(); i++) {
+			System.out.println(names[i] + ": " + game.getMoney(i) + " euros; " + game.getPoints(i) + " pontos");
+		}
+	}
+	
 	/**
 	 * 
 	 * @pre: rouletPoints > 0
@@ -149,7 +156,7 @@ public class Main {
 			System.out.println(game.getThePanel());
 			break;
 		case PONTOS:
-			System.out.println(game.getName() + " tem " + game.getTotalPoints() + " pontos");
+			printPoints(game);
 			break;
 		case SAIR:
 			checkQuitOutcome(game);

@@ -11,11 +11,15 @@ public class ContestantIterator {
 	}
 	
 	public boolean hasNext() {
-		return nextContestant < counter;
-	}
+		return nextContestant < counter - 1;
+	} 
 	
 	public Contestant next() {
 		return contestants[nextContestant++];
+	}
+	
+	public Contestant currentC() {
+		return contestants[nextContestant];
 	}
 	
 	public void resetContestant() {

@@ -25,6 +25,10 @@ public class Contestant {
 		points = 0;
 	}
 	
+	public int returnEuros() {
+		return euros;
+	}
+	
 	// Atualiza os pontos
 	public void updatePoints(int a) {
 		points = points + a;

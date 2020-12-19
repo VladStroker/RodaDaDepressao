@@ -1,18 +1,18 @@
 /**
  * @authors Ricardo e Vladyslav
  * 
- *          esta classe é o nosso sistema e irá lidar também com a distribuição
- *          de pontos e realizará uns métodos de verificação de condições
+ *         esta classe é o nosso sistema e irá lidar também com a distribuição
+ *         de pontos e realizará uns métodos de verificação de condições
  * 
  * 
  */
 
-public class SystemCommands {
+public class SystemCommands2 {
 	/** Constantes **/
 	private static final int BONUS = 1000; // valor de pontos a adicionar caso o palpite esteja correto
 	private static final int FAIL = 2000; // valor de pontos a subtrair caso o palpite esteja incorreto
 	/** Variáveis de instância **/
-	private int secretCount, contestantCount, round; // pontos do concorrente
+	private int secretCount, contestantCount, round, currentC; // pontos do concorrente
 	private Secret[] secrets;
 	private Contestant[] contestants;
 	private int numberOfRounds, numberOfContestants;
@@ -25,7 +25,7 @@ public class SystemCommands {
 	 * @param ---> segredo do jogo
 	 * @pre: 1 < name.length() < 40 && name != null
 	 */
-	public SystemCommands(int nrOfRounds, int nrOfContestants) {
+	public SystemCommands2(int nrOfRounds, int nrOfContestants) {
 		this.numberOfRounds = nrOfRounds;
 		this.numberOfContestants = nrOfContestants;
 		secretCount = 0;
@@ -34,59 +34,53 @@ public class SystemCommands {
 		contestants = new Contestant[nrOfContestants];
 		secrets = new Secret[nrOfRounds];
 	}
-
+	
 	public SecretIterator iteratorOfSecrets() {
-		secretIt = new SecretIterator(secrets, secretCount);
+		secretIt = new SecretIterator(secrets,secretCount);
 		return secretIt;
 	}
-
+	
 	public ContestantIterator iteratorOfContestants() {
-		contestantIt = new ContestantIterator(contestants, contestantCount);
+		contestantIt = new ContestantIterator(contestants,contestantCount);
 		return contestantIt;
 	}
-
+	
 	// Construtor de segredos
 	public void addSecret(String secret) {
 		secrets[secretCount] = new Secret(secret);
 		secrets[secretCount].createPanel(secret);
 		secretCount++;
 	}
-
+	
 	// Construtor de contestants
 	public void addContestant(String name) {
 		contestants[contestantCount] = new Contestant(name);
 		contestantCount++;
 	}
-
-	/*
-	 * mudança de ronda vai crashar quando chegar a ronda 5 de 4 por exemplo //
-	 * agora talvez não porque o iterador tem de ter um próximo
-	 */
+	
+	/* mudança de ronda vai crashar quando chegar a ronda 5 de 4 por exemplo // agora talvez
+	 * não porque o iterador tem de ter um próximo
+	*/
 	public void nextRound() {
 		if (secrets[round].getSecret().equals(secrets[round].puzzle()) && secretIt.hasNext()) {
 			round++;
-			contestantIt.currentC().updateMoney(contestantIt.currentC().returnPoints());
+			contestants[currentC].updateMoney(contestants[currentC].returnPoints());
 			resetPoints();
 			nextContestant();
-			// limpar os pontos e pô-los como dinheiro a serio
+			//limpar os pontos e pô-los como dinheiro a serio
 		}
 	}
-
+	
 	// mudança de concorrente
 	public void nextContestant() {
-			if (contestantIt.hasNext()) {
-				contestantIt.next();
-			} else {
-				contestantIt = iteratorOfContestants();
-				contestantIt.resetContestant();
-				// currentC = 0;
-			}
+		if(contestantIt.hasNext()) {
+			contestantIt.next();
+		} else {
+			contestantIt = iteratorOfContestants();
+			//currentC = 0;
 		}
-
+	}
 	
-
-	// while(contestantIt.hasNext()) {
-
 	/**
 	 * verificação se a palavra foi adivinhada por completo
 	 * 
@@ -151,9 +145,9 @@ public class SystemCommands {
 
 	public void pointsAdd(String letter, int numberRoulete) {
 		secrets[round].searchChar(letter.charAt(0));
-		// secrets[round].detectCharacter(letter.charAt(0));
+		//secrets[round].detectCharacter(letter.charAt(0));
 		int value = numberRoulete * secrets[round].getCounter();
-		contestantIt.currentC().updatePoints(value);// adição dos pontos quando a pessoa acerta na letra
+		contestants[currentC].updatePoints(value);// adição dos pontos quando a pessoa acerta na letra
 	}
 
 	/**
@@ -163,18 +157,17 @@ public class SystemCommands {
 	 * @pre: numberRoulette > 0
 	 */
 	public void pointsPenalize(int numberRoulette) {
-		contestantIt.currentC().updatePoints(-numberRoulette);
+		contestants[currentC].updatePoints(-numberRoulette);
 
 	}
-
+	
 	public String[] getNames() {
 		String[] tmp = new String[numberOfContestants];
-		for (int i = 0; i < numberOfContestants; i++) {
+		for(int i = 0; i < numberOfContestants; i++) {
 			tmp[i] = contestants[i].returnName();
-		}
-		return tmp;
+		} return tmp;
 	}
-
+	
 	/**
 	 * vai devolver o painel criado
 	 * 
@@ -183,12 +176,12 @@ public class SystemCommands {
 	public String getThePanel() {
 		return secrets[round].puzzle();
 	}
-
+	
 	public int getMaxRounds() {
 		return numberOfRounds;
 	}
-
-	// Para testes
+	
+	//Para testes
 	public int getCurrentRound() {
 		return round;
 	}
@@ -196,28 +189,31 @@ public class SystemCommands {
 	// desconta pontos quando o utilizador erra no palpite
 
 	public void fail() {
-		contestantIt.currentC().updatePoints(FAIL);
+		int points = contestants[currentC].returnPoints() - FAIL;
+		contestants[currentC].updatePoints(points);
 	}
 
 	// adição de pontos quando o utilizador acerta no palpite
 	public void sucess() {
-		contestantIt.currentC().updatePoints(BONUS);
+		int points = contestants[currentC].returnPoints() + BONUS;
+		contestants[currentC].updatePoints(points); 
 	}
 
+	
 	public int getContestant() {
 		return numberOfContestants;
 	}
-
+	
 	public int getMoney(int i) {
 		return contestants[i].returnEuros();
 	}
-
+	
 	public int getPoints(int i) {
 		return contestants[i].returnPoints();
 	}
-
+	
 	private void resetPoints() {
-		for (int i = 0; i < numberOfContestants; i++) {
+		for(int i = 0; i < numberOfContestants; i++) {
 			contestants[i].resetPoints();
 		}
 	}
