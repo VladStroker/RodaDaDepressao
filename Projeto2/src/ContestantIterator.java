@@ -6,12 +6,12 @@ public class ContestantIterator {
 	
 	public ContestantIterator(Contestant[] contestants, int counter) {
 		this.contestants = contestants;
-		this.counter = counter;
+		this.counter = counter - 1;
 		nextContestant = 0;
 	}
 	
 	public boolean hasNext() {
-		return nextContestant < counter - 1;
+		return nextContestant < counter;
 	} 
 	
 	public Contestant next() {

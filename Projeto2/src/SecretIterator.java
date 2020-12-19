@@ -13,6 +13,10 @@ public class SecretIterator {
 		return nextSecret < maxSecrets;
 	}
 	
+	public Secret currentS() {
+		return secrets[nextSecret];
+	}
+	
 	public Secret next() {
 		return secrets[nextSecret++];
 	}

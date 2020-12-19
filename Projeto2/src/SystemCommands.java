@@ -29,8 +29,8 @@ public class SystemCommands {
 		this.numberOfRounds = nrOfRounds;
 		this.numberOfContestants = nrOfContestants;
 		secretCount = 0;
-		contestantCount = 0;
 		round = 0;
+		contestantCount = 0;
 		contestants = new Contestant[nrOfContestants];
 		secrets = new Secret[nrOfRounds];
 	}
@@ -63,27 +63,32 @@ public class SystemCommands {
 	 * agora talvez não porque o iterador tem de ter um próximo
 	 */
 	public void nextRound() {
-		if (secrets[round].getSecret().equals(secrets[round].puzzle()) && secretIt.hasNext()) {
-			round++;
+		if (secretIt.currentS().getSecret().equals(secretIt.currentS().puzzle()) && secretIt.hasNext()) {
 			contestantIt.currentC().updateMoney(contestantIt.currentC().returnPoints());
+			round++;
 			resetPoints();
 			nextContestant();
+			secretIt.next();
 			// limpar os pontos e pô-los como dinheiro a serio
 		}
 	}
 
 	// mudança de concorrente
-	public void nextContestant() {
-			if (contestantIt.hasNext()) {
-				contestantIt.next();
-			} else {
-				contestantIt = iteratorOfContestants();
-				contestantIt.resetContestant();
-				// currentC = 0;
-			}
-		}
+	/*
+	 * public void nextContestant() { if (!contestantIt.hasNext()) { contestantIt =
+	 * iteratorOfContestants(); } else {
+	 * 
+	 * contestantIt.next(); } }
+	 */
 
-	
+	public void nextContestant() {
+		if (contestantIt.hasNext()) {
+			contestantIt.next();
+		} else {
+			contestantIt = iteratorOfContestants();
+			contestantIt.resetContestant(); // currentC = 0; } }
+		}
+	}
 
 	// while(contestantIt.hasNext()) {
 
@@ -93,7 +98,7 @@ public class SystemCommands {
 	 * @return true ---> caso o segredo estiver totalmente adivinhado
 	 */
 	public boolean isCompleted() {
-		return secrets[round].completed();
+		return secretIt.currentS().completed();
 
 	}
 
@@ -106,7 +111,7 @@ public class SystemCommands {
 	 */
 
 	public boolean isGuessCorrect(String guess) {
-		return secrets[round].isGuessRigth(guess);
+		return secretIt.currentS().isGuessRigth(guess);
 	}
 
 	/**
@@ -130,7 +135,7 @@ public class SystemCommands {
 	 */
 
 	public boolean isLetterRepeated(char letter) {
-		return secrets[round].RepeatedLetter(letter);
+		return secretIt.currentS().RepeatedLetter(letter);
 	}
 
 	/**
@@ -140,7 +145,7 @@ public class SystemCommands {
 	 * @pre: letter != null && 0 < letter.length() < 40
 	 */
 	public boolean isTheLetterInTheSecret(String letter) {
-		return secrets[round].belongs(letter);
+		return secretIt.currentS().belongs(letter);
 	}
 
 	/**
@@ -150,9 +155,9 @@ public class SystemCommands {
 	 */
 
 	public void pointsAdd(String letter, int numberRoulete) {
-		secrets[round].searchChar(letter.charAt(0));
+		secretIt.currentS().searchChar(letter.charAt(0));
 		// secrets[round].detectCharacter(letter.charAt(0));
-		int value = numberRoulete * secrets[round].getCounter();
+		int value = numberRoulete * secretIt.currentS().getCounter();
 		contestantIt.currentC().updatePoints(value);// adição dos pontos quando a pessoa acerta na letra
 	}
 
@@ -181,22 +186,17 @@ public class SystemCommands {
 	 * @return segredo em forma de painel
 	 */
 	public String getThePanel() {
-		return secrets[round].puzzle();
+		return secretIt.currentS().puzzle();
 	}
 
 	public int getMaxRounds() {
 		return numberOfRounds;
 	}
 
-	// Para testes
-	public int getCurrentRound() {
-		return round;
-	}
-
 	// desconta pontos quando o utilizador erra no palpite
 
 	public void fail() {
-		contestantIt.currentC().updatePoints(FAIL);
+		contestantIt.currentC().updatePoints(-FAIL);
 	}
 
 	// adição de pontos quando o utilizador acerta no palpite
@@ -214,6 +214,10 @@ public class SystemCommands {
 
 	public int getPoints(int i) {
 		return contestants[i].returnPoints();
+	}
+	
+	public int getCurrentRound() {
+		return round;
 	}
 
 	private void resetPoints() {

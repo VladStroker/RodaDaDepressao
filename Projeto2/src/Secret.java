@@ -112,9 +112,7 @@ public class Secret {
 	 * @pre: guess != null && 0 < guess.length() < 100
 	 */
 	public boolean isGuessRigth(String guess) {
-		panel = secret;
 		return (guess.equals(secret));
-
 	}
 
 	/**

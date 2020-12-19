@@ -81,8 +81,7 @@ public class Main {
 	private static void checkPuzzle(Scanner input, SystemCommands game) {
 		String guess = input.nextLine();
 		guess = guess.trim();
-		if (game.isCompleted() && game.getCurrentRound() == game.getMaxRounds()) { // neste caso se o segredo já estiver
-																					// revelado
+		if (game.isCompleted() && game.getCurrentRound() == game.getMaxRounds()) { // neste caso se o segredo já estiver revelado
 			System.out.println("O jogo terminou");
 		} else if (game.isGuessCorrect(guess)) {
 			game.sucess();
@@ -143,7 +142,7 @@ public class Main {
 	 */
 
 	// irá executar uma das opções escolhidas pelo utilizador
-	private static void executeOption(Scanner input, String option, SystemCommands game) {
+	private static void executeOption(Scanner input, String option, SystemCommands game, SecretIterator s1) {
 		switch (option) {
 
 		case ROLETA:
@@ -153,7 +152,11 @@ public class Main {
 			checkPuzzle(input, game);
 			break;
 		case PAINEL:
-			System.out.println(game.getThePanel());
+			if(s1.hasNext()) {
+			System.out.println(game.getThePanel()); }
+			else{
+			System.out.println();
+			}
 			break;
 		case PONTOS:
 			printPoints(game);
@@ -195,7 +198,7 @@ public class Main {
 		String option;
 		do {
 			option = input.next();
-			executeOption(input, option, game); // tinhamos adicionado aquilo algo no argumento e passado para as
+			executeOption(input, option, game,secretIt); // tinhamos adicionado aquilo algo no argumento e passado para as
 														// outras coisas
 
 		} while (!option.equals(SAIR));
