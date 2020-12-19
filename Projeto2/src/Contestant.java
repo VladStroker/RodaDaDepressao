@@ -15,6 +15,9 @@ public class Contestant {
 	public String returnName() {
 		return name;
 	}
+	public int compareTo(Contestant other) {
+		return returnName().compareTo(other.returnName());
+	}
 
 	// Devolve os pontos
 	public int returnPoints() {
