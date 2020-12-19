@@ -3,11 +3,11 @@ public class Contestant {
 	
 	// Variaveis
 	String name;
-	int points;
+	int points, euros;
 
 	// Construtor
-	public Contestant(String name) {
-		this.name = name;
+	public Contestant(String a) {
+		name = a;
 		points = 0;
 	}
 
@@ -21,9 +21,16 @@ public class Contestant {
 		return points;
 	}
 	
+	public void resetPoints() {
+		points = 0;
+	}
+	
 	// Atualiza os pontos
-	public void updatePoints(int score) {
-		points = points + score;
+	public void updatePoints(int a) {
+		points = points + a;
 	}
 
+	public void updateMoney(int a) {
+		euros = euros + a;
+	}
 }

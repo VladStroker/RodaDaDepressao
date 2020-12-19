@@ -1,8 +1,8 @@
 /**
  * @authors Ricardo e Vladyslav
  * 
- *         esta classe irá lidar com as operações relacionadas ao painel criação
- *         do mesmo, verificação de letras , substituição etc...
+ *          esta classe irá lidar com as operações relacionadas ao painel
+ *          criação do mesmo, verificação de letras , substituição etc...
  * 
  */
 public class Secret {
@@ -36,7 +36,6 @@ public class Secret {
 		for (int i = 0; i < secret.length(); i++) {
 			if (temppanel[i] >= 'a' && temppanel[i] <= 'z') {
 				temppanel[i] = '-';
-
 			}
 			temppanel.toString();
 			panel = String.valueOf(temppanel);
@@ -44,12 +43,6 @@ public class Secret {
 		return panel;
 	}
 
-	/**
-	 * @return panel ---> devolver o painel
-	 */
-	public String puzzle() {
-		return panel;
-	}
 
 	/**
 	 * procura da letra introduzida pelo utilizador e substituir no painel pela
@@ -61,40 +54,18 @@ public class Secret {
 	 * @pre: letter != null && 0 < letter.length() < 40
 	 */
 
-	public String searchChar(String letter) {
+	public void searchChar(char letter) {
+		counter = 0;
 		char[] temppanel = panel.toCharArray();
-		char a = letter.charAt(0);
 		for (int j = 0; j < secret.length(); j++) {
-			if (secret.charAt(j) == a) {
-				temppanel[j] = a;
+			if (secret.charAt(j) == letter) {
+				temppanel[j] = letter;
+				counter++;
 			}
 			temppanel.toString();
 			panel = String.valueOf(temppanel);
 		}
-		return panel;
-
-	}
-
-	/**
-	 * detecta a letra introduzida e vai contar o número de vezes que ela se
-	 * encontra na palavra
-	 * 
-	 * @param letter ---> letra introduzida pelo utilizador
-	 * @return counter ---> número de vezes que a letra está presente no segredo
-	 * @pre: letter != null && 0 < letter.length() < 40
-	 */
-
-	public int detectCharacter(char letter) {
-		counter = 0;
-		char[] temppanel = panel.toCharArray();
-		for (int u = 0; u < panel.length(); u++) {
-			if (temppanel[u] == letter) {
-				counter++;
-
-			}
-		}
-
-		return counter;
+		//return panel;
 	}
 
 	/**
@@ -107,7 +78,7 @@ public class Secret {
 	 * 
 	 */
 
-	public boolean detectRepeatedLetter(char letter) {
+	public boolean RepeatedLetter(char letter) {
 		char[] temppanel = panel.toCharArray();
 		int count = 0;
 		for (int u = 0; u < panel.length(); u++) {
@@ -118,7 +89,6 @@ public class Secret {
 		}
 		return (count > 0);
 	}
-
 	/**
 	 * verificar se a letra introduzida pertence ao segredo
 	 * 
@@ -154,9 +124,9 @@ public class Secret {
 	 */
 	public boolean completed() {
 		if (!panel.equals(secret)) {
-				return false;
-		}else {
-		return true;
+			return false;
+		} else {
+			return true;
 		}
 	}
 
@@ -168,10 +138,17 @@ public class Secret {
 	public int getCounter() {
 		return counter;
 	}
-	
+
 	// devolve o segredo original
 	public String getSecret() {
 		return secret;
 	}
 
+	/**
+	 * @return panel ---> devolver o painel
+	 */
+	public String puzzle() {
+		return panel;
+	}
+	
 }

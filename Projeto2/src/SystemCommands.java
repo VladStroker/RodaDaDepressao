@@ -7,7 +7,7 @@
  * 
  */
 
-public class SystemIDK {
+public class SystemCommands {
 	/** Constantes **/
 	private static final int BONUS = 1000; // valor de pontos a adicionar caso o palpite esteja correto
 	private static final int FAIL = 2000; // valor de pontos a subtrair caso o palpite esteja incorreto
@@ -15,8 +15,9 @@ public class SystemIDK {
 	private int points, secretCount, contestantCount, round, currentC; // pontos do concorrente
 	private Secret[] secrets;
 	private Contestant[] contestants;
-	private String name; // nome do concorrente
-	private int numberOfRounds;
+	private int numberOfRounds, numberOfContestants;
+	private ContestantIterator contestantIt;
+	private SecretIterator secretIt;
 
 	/**
 	 * Construtor
@@ -24,77 +25,63 @@ public class SystemIDK {
 	 * @param ---> segredo do jogo
 	 * @pre: 1 < name.length() < 40 && name != null
 	 */
-	public SystemIDK(int numberOfRounds, int numberOfContestants) {
-		this.numberOfRounds = numberOfRounds;
+	public SystemCommands(int nrOfRounds, int nrOfContestants) {
+		this.numberOfRounds = nrOfRounds;
+		this.numberOfContestants = nrOfContestants;
 		secretCount = 0;
 		contestantCount = 0;
 		points = 0;
 		round = 0;
-		currentC = 0;
-		contestants = new Contestant[numberOfContestants];
-		secrets = new Secret[numberOfRounds];
-		ContestantIterator c1;
-		SecretIterator s1;
+		contestants = new Contestant[nrOfContestants];
+		secrets = new Secret[nrOfRounds];
 	}
 	
-	public int getMaxRounds() {
-		return numberOfRounds;
+	public SecretIterator iteratorOfSecrets() {
+		secretIt = new SecretIterator(secrets,secretCount);
+		return secretIt;
 	}
 	
-	public int getCurrentRound() {
-		return round;
+	public ContestantIterator iteratorOfContestants() {
+		contestantIt = new ContestantIterator(contestants,contestantCount);
+		return contestantIt;
 	}
-
+	
 	// Construtor de segredos
 	public void addSecret(String secret) {
 		secrets[secretCount] = new Secret(secret);
 		secrets[secretCount].createPanel(secret);
 		secretCount++;
 	}
-
+	
 	// Construtor de contestants
 	public void addContestant(String name) {
 		contestants[contestantCount] = new Contestant(name);
 		contestantCount++;
 	}
 	
-	public SecretIterator iteratorOfSecrets() {
-		SecretIterator s1 = new SecretIterator(secrets,secretCount);
-		return s1;
-	}
-	
-	public ContestantIterator iteratorOfContestants() {
-		ContestantIterator c1 = new ContestantIterator(contestants,contestantCount);
-		return c1;
-	}
-	
-	// mudança de ronda
+	/* mudança de ronda vai crashar quando chegar a ronda 5 de 4 por exemplo // agora talvez
+	 * não porque o iterador tem de ter um próximo
+	*/
 	public void nextRound() {
-		if (secrets[round].getSecret().equals(secrets[round].puzzle()) && s1.hasNext()) {
+		if (secrets[round].getSecret().equals(secrets[round].puzzle()) && secretIt.hasNext()) {
 			round++;
+			contestants[currentC].updateMoney(contestants[currentC].returnPoints());
+			resetPoints();
+			nextContestant();
+			//limpar os pontos e pô-los como dinheiro a serio
 		}
 	}
 	
-	
-	
-
-	/**
-	 * vai devolver o painel criado
-	 * 
-	 * @return segredo em forma de painel
-	 */
-	public String getThePanel() {
-		return secrets[round].puzzle(); // estava so round
+	// mudança de concorrente
+	public void nextContestant() {
+		if(contestantIt.hasNext()) {
+			currentC++;
+		} else {
+			contestantIt = iteratorOfContestants();
+			currentC = 0;
+		}
 	}
-
-	/**
-	 * 
-	 * @return ---> nome do concorrente
-	 */
-	public String getName() {
-		return name;
-	}
-
+	
 	/**
 	 * verificação se a palavra foi adivinhada por completo
 	 * 
@@ -137,8 +124,8 @@ public class SystemIDK {
 	 * @pre: letter != null && 0 < letter.length() < 40
 	 */
 
-	public boolean isTheLetterRepeated(char letter) {
-		return secrets[round].detectRepeatedLetter(letter);
+	public boolean isLetterRepeated(char letter) {
+		return secrets[round].RepeatedLetter(letter);
 	}
 
 	/**
@@ -152,17 +139,14 @@ public class SystemIDK {
 	}
 
 	/**
-	 * este método irá verificar se a letra introduzida é válida e se verifica as
-	 * condições para adicionar pontos
-	 * 
 	 * @param letter         ---> letra introduzida pelo utilizador
 	 * @param numberRoulette ---> número escolhido na roleta
 	 * @pre: letter != null && 0 < letter.length() < 40 && numberRoulete > 0
 	 */
 
 	public void pointsAdd(String letter, int numberRoulete) {
-		secrets[round].searchChar(letter);
-		secrets[round].detectCharacter(letter.charAt(0));
+		secrets[round].searchChar(letter.charAt(0));
+		//secrets[round].detectCharacter(letter.charAt(0));
 		int value = points + (numberRoulete * secrets[round].getCounter());
 		contestants[currentC].updatePoints(value);// adição dos pontos quando a pessoa acerta na letra
 	}
@@ -174,17 +158,39 @@ public class SystemIDK {
 	 * @pre: numberRoulette > 0
 	 */
 	public void pointsPenalize(int numberRoulette) {
-		points = points - numberRoulette;
+		contestants[currentC].updatePoints(-numberRoulette);
 
 	}
 
 	/**
-	 * devolver a pontuação do utilizador
+	 * PRECISA DE SER ATUALIZADO
 	 * 
 	 * @return points ---> devolve a pontuação do utilizador
 	 */
 	public int getTotalPoints() {
-		return points;
+		return contestants[currentC].returnPoints();
+	}
+	
+	public String getName() {
+		return contestants[currentC].returnName();
+	}
+	
+	/**
+	 * vai devolver o painel criado
+	 * 
+	 * @return segredo em forma de painel
+	 */
+	public String getThePanel() {
+		return secrets[round].puzzle();
+	}
+	
+	public int getMaxRounds() {
+		return numberOfRounds;
+	}
+	
+	//Para testes
+	public int getCurrentRound() {
+		return round;
 	}
 
 	// desconta pontos quando o utilizador erra no palpite
@@ -198,4 +204,9 @@ public class SystemIDK {
 		points = points + BONUS;
 	}
 
+	private void resetPoints() {
+		for(int i = 0; i < numberOfContestants; i++) {
+			contestants[i].resetPoints();
+		}
+	}
 }

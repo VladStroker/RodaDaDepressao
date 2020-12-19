@@ -1,16 +1,16 @@
 public class SecretIterator {
 	private Secret[] secrets;
-	private int counter;
+	private int maxSecrets;
 	private int nextSecret;
 	
-	public SecretIterator(Secret[] secrets, int counter) {
+	public SecretIterator(Secret[] secrets, int maxSecrets) {
 		this.secrets = secrets;
-		this.counter = counter;
+		this.maxSecrets = maxSecrets;
 		nextSecret = 0;
 	}
 	
 	public boolean hasNext() {
-		return nextSecret < counter;
+		return nextSecret < maxSecrets;
 	}
 	
 	public Secret next() {
