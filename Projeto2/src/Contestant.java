@@ -6,8 +6,8 @@ public class Contestant {
 	int points;
 
 	// Construtor
-	public Contestant(String a) {
-		name = a;
+	public Contestant(String name) {
+		this.name = name;
 		points = 0;
 	}
 
@@ -22,8 +22,8 @@ public class Contestant {
 	}
 	
 	// Atualiza os pontos
-	public void updatePoints(int a) {
-		points = points + a;
+	public void updatePoints(int score) {
+		points = points + score;
 	}
 
 }

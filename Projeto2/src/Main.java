@@ -43,8 +43,7 @@ public class Main {
 	private static void checkPuzzle(Scanner input, SystemIDK game) {
 		String guess = input.nextLine();
 		guess = guess.trim();
-		if (game.isCompleted() && game.getCurrentRound() == game.getMaxRounds()) { // neste caso se o segredo já estiver
-																					// revelado
+		if (game.isCompleted() && game.getCurrentRound() == game.getMaxRounds()) { // neste caso se o segredo já estiver																		// revelado
 			System.out.println("O jogo terminou");
 		} else if (game.isGuessCorrect(guess)) {
 			game.sucess();
@@ -72,7 +71,7 @@ public class Main {
 			lastPlay(game);
 		} else {
 			game.pointsPenalize(points);
-			//game.nextContestant();
+			//game.nextContestant
 		}
 	}
 	
@@ -122,6 +121,7 @@ public class Main {
 		int i = 0;
 		int a = 0;
 		String[] copy = new String[50];
+		
 		while (file.hasNextLine()) {
 			copy[i] = file.nextLine();
 			i++;
@@ -139,6 +139,13 @@ public class Main {
 		}
 		file.close();
 	}
+	
+	private static void test(ContestantIterator con1, SystemIDK game) { // como tinhamos feito aqui?
+			if(!con1.hasNext()) {
+				con1 = game.iteratorOfContestants();
+			}
+		
+}
 
 	// irá executar uma das opções escolhidas pelo utilizador
 	private static void executeOption(Scanner input, String option, SystemIDK game, SecretIterator s1){

@@ -30,8 +30,11 @@ public class SystemIDK {
 		contestantCount = 0;
 		points = 0;
 		round = 0;
+		currentC = 0;
 		contestants = new Contestant[numberOfContestants];
 		secrets = new Secret[numberOfRounds];
+		ContestantIterator c1;
+		SecretIterator s1;
 	}
 	
 	public int getMaxRounds() {
@@ -56,26 +59,23 @@ public class SystemIDK {
 	}
 	
 	public SecretIterator iteratorOfSecrets() {
-		return new SecretIterator(secrets,secretCount);
+		SecretIterator s1 = new SecretIterator(secrets,secretCount);
+		return s1;
 	}
 	
 	public ContestantIterator iteratorOfContestants() {
-		return new ContestantIterator(contestants,contestantCount);
+		ContestantIterator c1 = new ContestantIterator(contestants,contestantCount);
+		return c1;
 	}
 	
 	// mudança de ronda
 	public void nextRound() {
-		if (secrets[round].getSecret().equals(secrets[round].puzzle())) {
+		if (secrets[round].getSecret().equals(secrets[round].puzzle()) && s1.hasNext()) {
 			round++;
 		}
 	}
 	
-	// mudança de concorrente
-	public void nextContestant(String name) {
 	
-		contestants[contestantCount] = new Contestant(name);
-		contestantCount++;
-	}
 	
 
 	/**
@@ -84,7 +84,7 @@ public class SystemIDK {
 	 * @return segredo em forma de painel
 	 */
 	public String getThePanel() {
-		return secrets[round].puzzle();
+		return secrets[round].puzzle(); // estava so round
 	}
 
 	/**
