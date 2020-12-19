@@ -128,6 +128,7 @@ public class Main {
 	}
 	
 	private static void printPoints(SystemCommands game) {
+		game.sortContestants();
 		String[] names = game.getNames();
 		for(int i = 0 ; i < game.getContestant(); i++) {
 			System.out.println(names[i] + ": " + game.getMoney(i) + " euros; " + game.getPoints(i) + " pontos");

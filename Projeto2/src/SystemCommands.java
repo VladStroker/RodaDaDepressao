@@ -65,8 +65,9 @@ public class SystemCommands {
 	public void nextRound() {
 		if (secretIt.currentS().getSecret().equals(secretIt.currentS().puzzle()) && secretIt.hasNext()) {
 			contestantIt.currentC().updateMoney(contestantIt.currentC().returnPoints());
-			round++;
+			contestantIt.currentC().incRoundsWon();
 			resetPoints();
+			round++;
 			nextContestant();
 			secretIt.next();
 			// limpar os pontos e pô-los como dinheiro a serio
@@ -172,6 +173,23 @@ public class SystemCommands {
 
 	}
 
+	public void sortContestants() {
+
+		if (tiedPrize()) {
+			if(tiedRoundsWon()) {
+				if(tiedPoints()) {
+					orderAlphabetically();
+				} else {
+					orderByPoints();
+				}
+			} else {
+				orderByRoundsWon();
+			}
+		} else {
+			orderByPrize();
+		}
+	}
+
 	public String[] getNames() {
 		String[] tmp = new String[numberOfContestants];
 		for (int i = 0; i < numberOfContestants; i++) {
@@ -215,7 +233,7 @@ public class SystemCommands {
 	public int getPoints(int i) {
 		return contestants[i].returnPoints();
 	}
-	
+
 	public int getCurrentRound() {
 		return round;
 	}
@@ -225,4 +243,88 @@ public class SystemCommands {
 			contestants[i].resetPoints();
 		}
 	}
+
+// 
+	private boolean tiedPrize() {
+		boolean state = false;
+		for (int i = 0; i < numberOfContestants; i++) {
+			for (int j = numberOfContestants - 1; j >= i; j--) {
+				if (contestants[j - 1].returnEuros() == contestants[j].returnEuros()) {
+					state = true;
+				}
+			}
+		}
+		return state;
+	}
+
+	private void orderByPrize() {
+		for (int i = 1; i < numberOfContestants; i++) {
+			for (int j = numberOfContestants - 1; j >= i; j--) {
+				if (contestants[j - 1].returnEuros() < contestants[j].returnEuros()) {
+					Contestant tmp = contestants[j - 1];
+					contestants[j - 1] = contestants[j];
+					contestants[j] = tmp;
+				}
+			}
+		}
+	}
+	
+	
+	private boolean tiedRoundsWon() {
+		boolean state = false;
+		for (int i = 0; i < numberOfContestants; i++) {
+			for (int j = numberOfContestants - 1; j >= i; j--) {
+				if (contestants[j - 1].returnRoundsWon() == contestants[j].returnRoundsWon()) {
+					state = true;
+				}
+			}
+		}
+		return state;
+	}
+	
+	private void orderByRoundsWon() {
+		for (int i = 1; i < numberOfContestants; i++) {
+			for (int j = numberOfContestants - 1; j >= i; j--) {
+				if (contestants[j - 1].returnRoundsWon() < contestants[j].returnRoundsWon()) {
+					Contestant tmp = contestants[j - 1];
+					contestants[j - 1] = contestants[j];
+					contestants[j] = tmp;
+				}
+			}
+		}
+	}
+	
+	private boolean tiedPoints() {
+		boolean state = false;
+		for (int i = 0; i < numberOfContestants; i++) {
+			for (int j = numberOfContestants - 1; j >= i; j--) {
+				if (contestants[j - 1].returnPoints() == contestants[j].returnPoints()) {
+					state = true;
+				}
+			}
+		}
+		return state;
+	}
+	
+	private void orderByPoints() {
+		for (int i = 1; i < numberOfContestants; i++) {
+			for (int j = numberOfContestants - 1; j >= i; j--) {
+				if (contestants[j - 1].returnPoints() < contestants[j].returnPoints()) {
+					Contestant tmp = contestants[j - 1];
+					contestants[j - 1] = contestants[j];
+					contestants[j] = tmp;
+				}
+			}
+		}
+	}
+	
+	private void orderAlphabetically() {
+		
+	}
+	
+	
+	
+	
+	
+	
 }

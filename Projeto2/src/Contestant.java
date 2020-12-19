@@ -3,7 +3,7 @@ public class Contestant {
 	
 	// Variaveis
 	String name;
-	int points, euros;
+	int points, euros, roundsWon;
 
 	// Construtor
 	public Contestant(String a) {
@@ -36,5 +36,13 @@ public class Contestant {
 
 	public void updateMoney(int a) {
 		euros = euros + a;
+	}
+	
+	public int returnRoundsWon() {
+		return roundsWon;
+	}
+	
+	public void incRoundsWon() {
+		roundsWon = roundsWon + 1;
 	}
 }
