@@ -1,4 +1,3 @@
-
 public class Contestant {
 	
 	// Variaveis
@@ -38,7 +37,9 @@ public class Contestant {
 	}
 
 	public void updateMoney(int a) {
+		if(a >= 0 ) {
 		euros = euros + a;
+		}
 	}
 	
 	public int returnRoundsWon() {

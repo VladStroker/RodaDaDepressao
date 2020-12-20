@@ -17,8 +17,11 @@ public class SecretIterator {
 		return secrets[nextSecret];
 	}
 	
+	public Secret previousS() {
+		return secrets[nextSecret-1];
+	}
+	
 	public Secret next() {
 		return secrets[nextSecret++];
 	}
 }
-

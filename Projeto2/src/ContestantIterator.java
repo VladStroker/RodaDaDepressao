@@ -1,4 +1,3 @@
-
 public class ContestantIterator {
 	private Contestant[] contestants;
 	private int counter;
@@ -6,7 +5,7 @@ public class ContestantIterator {
 	
 	public ContestantIterator(Contestant[] contestants, int counter) {
 		this.contestants = contestants;
-		this.counter = counter - 1;
+		this.counter = counter ;
 		nextContestant = 0;
 	}
 	
@@ -26,4 +25,3 @@ public class ContestantIterator {
 		nextContestant = 0;
 	}
 }
-

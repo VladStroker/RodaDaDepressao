@@ -65,10 +65,8 @@ public class Main {
 	private static void checkQuitOutcome(SystemCommands game) {
 		if (!game.isCompleted()) {
 			System.out.println(NAO_ACABOU);
-		} else if (game.isCompleted() && game.getTotalPoints() > 0) {
-			System.out.println(PARABENS + " " + GANHOU + " " + game.getTotalPoints() + " " + MOEDA);
-		} else if (game.isCompleted() && game.getTotalPoints() <= 0) {
-			System.out.println(PARABENS + " " + PERDEU);
+		} else if (game.getCurrentRound() == game.getMaxRounds()) {
+			System.out.println(PARABENS + " " + GANHOU + " " + game.getMaxPrize() + " " + MOEDA);
 		}
 	}
 
@@ -81,7 +79,8 @@ public class Main {
 	private static void checkPuzzle(Scanner input, SystemCommands game) {
 		String guess = input.nextLine();
 		guess = guess.trim();
-		if (game.isCompleted() && game.getCurrentRound() == game.getMaxRounds()) { // neste caso se o segredo já estiver revelado
+		if (game.isCompleted() && game.getCurrentRound() == game.getMaxRounds()) { // neste caso se o segredo já estiver
+																					// revelado
 			System.out.println("O jogo terminou");
 		} else if (game.isGuessCorrect(guess)) {
 			game.sucess();
@@ -90,7 +89,7 @@ public class Main {
 			game.fail();
 			game.nextContestant();
 		}
-	} 
+	}
 
 	private static void roletaOutcomes(Scanner input, SystemCommands game) {
 		int roulettePoints = input.nextInt();
@@ -100,7 +99,8 @@ public class Main {
 			System.out.println(VALOR_INVALIDO);
 		} else if (!game.isLetter(letter.charAt(0)) || letter.length() != 1) {
 			System.out.println(LETRA_INVALIDA);
-		} else if (game.getCurrentRound() == game.getMaxRounds()) { //game.isCompleted() && game.isLetter(letter.charAt(0)) || 
+		} else if (game.getCurrentRound() == game.getMaxRounds()) { // game.isCompleted() &&
+																	// game.isLetter(letter.charAt(0)) ||
 			System.out.println(JOGO_JA_TERMINOU);
 		} else {
 			verification(roulettePoints, letter, game);
@@ -119,22 +119,23 @@ public class Main {
 			game.nextContestant();
 		}
 	}
-	
-	
+
 	private static void lastPlay(SystemCommands game) {
 		if (game.isCompleted()) {
 			game.nextRound();
 		}
 	}
-	
+
 	private static void printPoints(SystemCommands game) {
 		game.sortContestants();
-		String[] names = game.getNames();
-		for(int i = 0 ; i < game.getContestant(); i++) {
-			System.out.println(names[i] + ": " + game.getMoney(i) + " euros; " + game.getPoints(i) + " pontos");
+		Contestant[] nameList = game.getNames();
+		for(int i = 0; i < game.getContestant(); i++) {
+			System.out.println("nome: " + nameList[i].returnName() + " euros: " + nameList[i].returnEuros() + " pontos: " +  nameList[i].returnPoints());
 		}
+
 	}
 	
+
 	/**
 	 * 
 	 * @pre: rouletPoints > 0
@@ -153,10 +154,10 @@ public class Main {
 			checkPuzzle(input, game);
 			break;
 		case PAINEL:
-			if(s1.hasNext()) {
-			System.out.println(game.getThePanel()); }
-			else{
-			System.out.println();
+			if (s1.hasNext()) {
+				System.out.println(game.getThePanel());
+			} else {
+				System.out.println(game.getLastSecret());
 			}
 			break;
 		case PONTOS:
@@ -173,7 +174,7 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws FileNotFoundException {
-		
+
 		String fileName = "\\Users\\vlady\\Documents\\topSecret.txt";
 		FileReader reader = new FileReader(fileName);
 		Scanner file = new Scanner(reader);
@@ -181,7 +182,7 @@ public class Main {
 
 		int numberOfRounds = input.nextInt();
 		int numberOfContestants = input.nextInt();
-		
+
 		SystemCommands game = new SystemCommands(numberOfRounds, numberOfContestants);
 
 		int[] linesOfTheFile = new int[numberOfRounds];
@@ -195,23 +196,22 @@ public class Main {
 
 		SecretIterator secretIt = game.iteratorOfSecrets();
 		ContestantIterator contestantIt = game.iteratorOfContestants();
-		
+
 		String option;
 		do {
 			option = input.next();
-			executeOption(input, option, game,secretIt); // tinhamos adicionado aquilo algo no argumento e passado para as
-														// outras coisas
+			executeOption(input, option, game, secretIt); // tinhamos adicionado aquilo algo no argumento e passado para
+															// as
+															// outras coisas
 
 		} while (!option.equals(SAIR));
 		input.close();
-	}
 
 }
 
-//Feito
-//Rondas, Contestants em arrays. Trocamos de rondas e de contestants.
-//Temos iteradores para o registo de concorrentes e segredos. E para trocar de segredo e de concorrente
-
-//Falta
-//Função que inicializa um nova ronda (quando painel.equals(segredo)) : Criar um painel com o novo segredo. Coloca os pontos de toda a gente a 0. Guarda o dinheiro do vencedor.
-//E passa para o proximo concorrente
+/* Adicionar condição if no comando pontos
+ * implementar splitPrize
+ * Ao acabar a ronda automaticamente incrementar os pontos por 6000 ( podemos por no nextRound() if statement, se for
+ * a ultima ronda, podemos aumentar os pontos, tinhamos de verificar se estavam empatados
+ */
+*/
