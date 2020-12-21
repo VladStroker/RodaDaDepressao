@@ -246,18 +246,6 @@ public class SystemCommands {
 		}
 	}
 
-// 
-	private boolean tiedPrize() {
-		boolean state = false;
-		for (int i = 0; i < numberOfContestants - 1; i++) {
-			if (nameList[i].returnEuros() == nameList[i + 1].returnEuros()) {
-				state = true;
-			}
-			i++;
-		}
-		return state;
-	}
-
 	private void orderByPrize() {
 		for (int i = 1; i < numberOfContestants; i++) {
 			for (int j = numberOfContestants - 1; j >= i; j--) {
@@ -270,17 +258,6 @@ public class SystemCommands {
 		}
 	}
 
-	private boolean tiedRoundsWon() {
-		boolean state = false;
-		for (int i = 0; i < numberOfContestants - 1; i++) {
-			if (nameList[i].returnRoundsWon() == nameList[i + 1].returnRoundsWon()) {
-				state = true;
-			}
-			i++;
-		}
-		return state;
-	}
-
 	private void orderByRoundsWon() {
 		for (int i = 1; i < numberOfContestants; i++) {
 			for (int j = numberOfContestants - 1; j >= i; j--) {
@@ -291,17 +268,6 @@ public class SystemCommands {
 				}
 			}
 		}
-	}
-
-	private boolean tiedPoints() {
-		boolean state = false;
-		for (int i = 0; i < numberOfContestants - 1; i++) {
-			if (nameList[i].returnPoints() == nameList[i + 1].returnPoints()) {
-				state = true;
-			}
-			i++;
-		}
-		return state;
 	}
 
 	private void orderByPoints() {

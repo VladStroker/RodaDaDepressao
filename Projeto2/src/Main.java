@@ -176,7 +176,7 @@ public class Main {
 
 	public static void main(String[] args) throws FileNotFoundException {
 
-		String fileName = "\\Users\\vlady\\Documents\\topSecret.txt";
+		String fileName = "topSecret.txt";
 		FileReader reader = new FileReader(fileName);
 		Scanner file = new Scanner(reader);
 		Scanner input = new Scanner(System.in);
