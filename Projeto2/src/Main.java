@@ -35,7 +35,7 @@ public class Main {
 		int counter = 0;
 		int i = 0;
 		int a = 0;
-		String[] copy = new String[50];
+		String[] copy = new String[Integer.MAX_VALUE/1000];
 		while (file.hasNextLine()) {
 			copy[i] = file.nextLine();
 			i++;
@@ -63,10 +63,12 @@ public class Main {
 
 	// verifica as possibilidades no fim do jogo
 	private static void checkQuitOutcome(SystemCommands game) {
-		if (!game.isCompleted()) {
+		game.sortContestants();
+		if (game.getCurrentRound() != game.getMaxRounds()) {
 			System.out.println(NAO_ACABOU);
 		} else if (game.getCurrentRound() == game.getMaxRounds()) {
-			System.out.println(PARABENS + " " + GANHOU + " " + game.getMaxPrize() + " " + MOEDA);
+			//System.out.println(PARABENS + " " + GANHOU + " " + game.getMaxPrize() + " " + MOEDA);
+			System.out.println("Parabens! O maior premio foi " + game.getMaxPrize() + " euros");
 		}
 	}
 
@@ -79,8 +81,7 @@ public class Main {
 	private static void checkPuzzle(Scanner input, SystemCommands game) {
 		String guess = input.nextLine();
 		guess = guess.trim();
-		if (game.isCompleted() && game.getCurrentRound() == game.getMaxRounds()) { // neste caso se o segredo já estiver
-																					// revelado
+		if (game.isCompleted() && game.getCurrentRound() == game.getMaxRounds()) {
 			System.out.println("O jogo terminou");
 		} else if (game.isGuessCorrect(guess)) {
 			game.sucess();
@@ -129,12 +130,12 @@ public class Main {
 	private static void printPoints(SystemCommands game) {
 		game.sortContestants();
 		Contestant[] nameList = game.getNames();
-		for(int i = 0; i < game.getContestant(); i++) {
-			System.out.println("nome: " + nameList[i].returnName() + " euros: " + nameList[i].returnEuros() + " pontos: " +  nameList[i].returnPoints());
+		for (int i = 0; i < game.getContestant(); i++) {
+			System.out.println(nameList[i].returnName() +": " + nameList[i].returnEuros() + " euros; " 
+					+ nameList[i].returnPoints() + " pontos");
 		}
 
 	}
-	
 
 	/**
 	 * 
@@ -195,7 +196,7 @@ public class Main {
 		addContestants(game, input, numberOfContestants);
 
 		SecretIterator secretIt = game.iteratorOfSecrets();
-		ContestantIterator contestantIt = game.iteratorOfContestants();
+		game.iteratorOfContestants();
 
 		String option;
 		do {
@@ -207,11 +208,14 @@ public class Main {
 		} while (!option.equals(SAIR));
 		input.close();
 
+	}
 }
 
-/* Adicionar condição if no comando pontos
- * implementar splitPrize
- * Ao acabar a ronda automaticamente incrementar os pontos por 6000 ( podemos por no nextRound() if statement, se for
- * a ultima ronda, podemos aumentar os pontos, tinhamos de verificar se estavam empatados
+/*
+ * Adicionar condição if no comando pontos implementar splitPrize Ao acabar a
+ * ronda automaticamente incrementar os pontos por 6000 ( podemos por no
+ * nextRound() if statement, se for a ultima ronda, podemos aumentar os pontos,
+ * tinhamos de verificar se estavam empatados
  */
-*/
+
+// temos que adicionar o limite de jogadores?? no maximo so ha 4 e no max so ha 10 segredos. É para implemtar?

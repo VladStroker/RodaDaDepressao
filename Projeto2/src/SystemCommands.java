@@ -33,6 +33,7 @@ public class SystemCommands {
 		contestantCount = 0;
 		contestants = new Contestant[nrOfContestants];
 		secrets = new Secret[nrOfRounds];
+		nameList = new Contestant[nrOfContestants];
 	}
 
 	public SecretIterator iteratorOfSecrets() {
@@ -69,11 +70,15 @@ public class SystemCommands {
 			resetPoints();
 			round++;
 			nextContestant();
-			secretIt.next(); 
+			secretIt.next();
+			updateNameList();
+			sortContestants();
+			if(round == numberOfRounds) {
+				whoIsTheWinner();
 			}
-			// limpar os pontos e pô-los como dinheiro a serio
 		}
-	
+		// limpar os pontos e pô-los como dinheiro a serio
+	}
 
 	// mudança de concorrente
 	/*
@@ -87,7 +92,7 @@ public class SystemCommands {
 		contestantIt.next();
 		if (!contestantIt.hasNext()) {
 			contestantIt.resetContestant();
-			//contestantIt.resetContestant(); // currentC = 0; } }
+			// contestantIt.resetContestant(); // currentC = 0; } }
 		}
 	}
 
@@ -160,6 +165,7 @@ public class SystemCommands {
 		// secrets[round].detectCharacter(letter.charAt(0));
 		int value = numberRoulete * secretIt.currentS().getCounter();
 		contestantIt.currentC().updatePoints(value);// adição dos pontos quando a pessoa acerta na letra
+		updateNameList();
 	}
 
 	/**
@@ -170,15 +176,15 @@ public class SystemCommands {
 	 */
 	public void pointsPenalize(int numberRoulette) {
 		contestantIt.currentC().updatePoints(-numberRoulette);
-
+		updateNameList();
 	}
 
 	public void sortContestants() {
-		nameList = contestants.clone();
+		// nameList = contestants.clone();
+		updateNameList();
 		if (tiedPrize()) {
-			maxPoints = maxPoints + splitPrize();
-			if(tiedRoundsWon()) {
-				if(tiedPoints()) {
+			if (tiedRoundsWon()) {
+				if (tiedPoints()) {
 					orderAlphabetically();
 				} else {
 					orderByPoints();
@@ -188,7 +194,6 @@ public class SystemCommands {
 			}
 		} else {
 			orderByPrize();
-			maxPoints = maxPoints + 6000;
 		}
 	}
 
@@ -208,11 +213,7 @@ public class SystemCommands {
 	public int getMaxRounds() {
 		return numberOfRounds;
 	}
-	
-	public int getMaxPrize() {
-		return maxPoints;
-	}
-	
+
 	public String getLastSecret() {
 		return secretIt.previousS().getSecret();
 	}
@@ -235,6 +236,18 @@ public class SystemCommands {
 	public int getCurrentRound() {
 		return round;
 	}
+	// esta função basicamente vai devolver o maior premio existente
+	private void whoIsTheWinner() {
+		int maxPrize = getMaxPrize();
+		if(!tiedPrize()) {
+			nameList[0].updateMoney(6000);
+		} else {
+			int split = getTiedContestants(maxPrize);
+			for(int i = 0; i < split; i++) {
+				nameList[i].updateMoney(6000 / split);
+			}
+		}
+	}
 
 	private void resetPoints() {
 		for (int i = 0; i < numberOfContestants; i++) {
@@ -245,7 +258,7 @@ public class SystemCommands {
 // 
 	private boolean tiedPrize() {
 		boolean state = false;
-		for (int i =1; i < numberOfContestants; i++) {
+		for (int i = 1; i < numberOfContestants; i++) {
 			for (int j = numberOfContestants - 1; j >= i; j--) {
 				if (nameList[j - 1].returnEuros() == nameList[j].returnEuros()) {
 					state = true;
@@ -258,7 +271,7 @@ public class SystemCommands {
 	private void orderByPrize() {
 		for (int i = 1; i < numberOfContestants; i++) {
 			for (int j = numberOfContestants - 1; j >= i; j--) {
-				if (nameList[j - 1].returnEuros() < nameList[j].returnEuros()) {
+				if (nameList[j - 1].returnEuros() <= nameList[j].returnEuros()) {
 					Contestant tmp = nameList[j - 1];
 					nameList[j - 1] = nameList[j];
 					nameList[j] = tmp;
@@ -266,8 +279,7 @@ public class SystemCommands {
 			}
 		}
 	}
-	
-	
+
 	private boolean tiedRoundsWon() {
 		boolean state = false;
 		for (int i = 1; i < numberOfContestants; i++) {
@@ -279,7 +291,7 @@ public class SystemCommands {
 		}
 		return state;
 	}
-	
+
 	private void orderByRoundsWon() {
 		for (int i = 1; i < numberOfContestants; i++) {
 			for (int j = numberOfContestants - 1; j >= i; j--) {
@@ -291,7 +303,7 @@ public class SystemCommands {
 			}
 		}
 	}
-	
+
 	private boolean tiedPoints() {
 		boolean state = false;
 		for (int i = 1; i < numberOfContestants; i++) {
@@ -303,11 +315,23 @@ public class SystemCommands {
 		}
 		return state;
 	}
-	
+
 	private void orderByPoints() {
 		for (int i = 1; i < numberOfContestants; i++) {
 			for (int j = numberOfContestants - 1; j >= i; j--) {
-				if (nameList[j - 1].returnPoints() < nameList[j].returnPoints()) {
+				if (nameList[j - 1].returnPoints() <= nameList[j].returnPoints()) {
+					Contestant tmp = nameList[j - 1];
+					nameList[j - 1] = nameList[j];
+					nameList[j] = tmp;
+				}
+			}
+		}
+	}
+
+	private void orderAlphabetically() {
+		for (int i = 1; i < numberOfContestants; i++) {
+			for (int j = numberOfContestants - 1; j >= i; j--) {
+				if (nameList[j - 1].compareTo(nameList[j]) > 0) {
 					Contestant tmp = nameList[j - 1];
 					nameList[j - 1] = nameList[j];
 					nameList[j] = tmp;
@@ -316,21 +340,29 @@ public class SystemCommands {
 		}
 	}
 	
-	private void orderAlphabetically() {
-		for(int i = 1; i < numberOfContestants; i++) {
-			for (int j = numberOfContestants - 1; j >= i; j--) {
-				if(nameList[j-1].compareTo(nameList[j]) > 0) {
-					Contestant tmp = nameList[j - 1];
-					nameList[j - 1] = nameList[j];
-					nameList[j] = tmp;
+	public int getMaxPrize() {
+		int max = 0;
+		for (int i = 0; i < numberOfContestants; i++) {
+			if (contestants[i].returnEuros() > max) {
+				max = contestants[i].returnEuros();
 			}
-			}
-		}
+		} return max;
 	}
 	
+	private int getTiedContestants(int maxPrize) {
+		int counter = 0;
+		int tmp = nameList[0].returnEuros();
+		for(int i = 0; i < numberOfContestants; i++) {
+			if(tmp == nameList[i].returnEuros()) {
+				counter++;
+			}
+		}
+		return counter;
+	}
 	
-	
-	
-	
-	
+	private void updateNameList() {
+		for (int i = 0; i < numberOfContestants; i++) { // faz a mesma coisa que o clone
+			nameList[i] = contestants[i];
+		}
+	}
 }
