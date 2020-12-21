@@ -35,7 +35,7 @@ public class Main {
 		int counter = 0;
 		int i = 0;
 		int a = 0;
-		String[] copy = new String[Integer.MAX_VALUE/1000];
+		String[] copy = new String[10000000];
 		while (file.hasNextLine()) {
 			copy[i] = file.nextLine();
 			i++;
@@ -176,7 +176,7 @@ public class Main {
 
 	public static void main(String[] args) throws FileNotFoundException {
 
-		String fileName = "topSecret.txt";
+		String fileName = "\\Users\\vlady\\Documents\\topSecret.txt";
 		FileReader reader = new FileReader(fileName);
 		Scanner file = new Scanner(reader);
 		Scanner input = new Scanner(System.in);
