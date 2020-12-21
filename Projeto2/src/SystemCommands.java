@@ -73,7 +73,7 @@ public class SystemCommands {
 			secretIt.next();
 			updateNameList();
 			sortContestants();
-			if(round == numberOfRounds) {
+			if (round == numberOfRounds) {
 				whoIsTheWinner();
 			}
 		}
@@ -187,12 +187,18 @@ public class SystemCommands {
 				if (tiedPoints()) {
 					orderAlphabetically();
 				} else {
+					orderAlphabetically();
 					orderByPoints();
 				}
 			} else {
+				orderAlphabetically();
+				orderByPoints();
 				orderByRoundsWon();
 			}
 		} else {
+			orderAlphabetically();
+			orderByPoints();
+			orderByRoundsWon();
 			orderByPrize();
 		}
 	}
@@ -236,14 +242,15 @@ public class SystemCommands {
 	public int getCurrentRound() {
 		return round;
 	}
+
 	// esta função basicamente vai devolver o maior premio existente
 	private void whoIsTheWinner() {
 		int maxPrize = getMaxPrize();
-		if(!tiedPrize()) {
+		if (!tiedPrize()) {
 			nameList[0].updateMoney(6000);
 		} else {
 			int split = getTiedContestants(maxPrize);
-			for(int i = 0; i < split; i++) {
+			for (int i = 0; i < split; i++) {
 				nameList[i].updateMoney(6000 / split);
 			}
 		}
@@ -258,12 +265,11 @@ public class SystemCommands {
 // 
 	private boolean tiedPrize() {
 		boolean state = false;
-		for (int i = 1; i < numberOfContestants; i++) {
-			for (int j = numberOfContestants - 1; j >= i; j--) {
-				if (nameList[j - 1].returnEuros() == nameList[j].returnEuros()) {
-					state = true;
-				}
+		for (int i = 0; i < numberOfContestants - 1; i++) {
+			if (nameList[i].returnEuros() == nameList[i + 1].returnEuros()) {
+				state = true;
 			}
+			i++;
 		}
 		return state;
 	}
@@ -271,7 +277,7 @@ public class SystemCommands {
 	private void orderByPrize() {
 		for (int i = 1; i < numberOfContestants; i++) {
 			for (int j = numberOfContestants - 1; j >= i; j--) {
-				if (nameList[j - 1].returnEuros() <= nameList[j].returnEuros()) {
+				if (nameList[j - 1].returnEuros() < nameList[j].returnEuros()) {
 					Contestant tmp = nameList[j - 1];
 					nameList[j - 1] = nameList[j];
 					nameList[j] = tmp;
@@ -282,12 +288,11 @@ public class SystemCommands {
 
 	private boolean tiedRoundsWon() {
 		boolean state = false;
-		for (int i = 1; i < numberOfContestants; i++) {
-			for (int j = numberOfContestants - 1; j >= i; j--) {
-				if (nameList[j - 1].returnRoundsWon() == nameList[j].returnRoundsWon()) {
-					state = true;
-				}
+		for (int i = 0; i < numberOfContestants - 1; i++) {
+			if (nameList[i].returnRoundsWon() == nameList[i + 1].returnRoundsWon()) {
+				state = true;
 			}
+			i++;
 		}
 		return state;
 	}
@@ -306,12 +311,11 @@ public class SystemCommands {
 
 	private boolean tiedPoints() {
 		boolean state = false;
-		for (int i = 1; i < numberOfContestants; i++) {
-			for (int j = numberOfContestants - 1; j >= i; j--) {
-				if (nameList[j - 1].returnPoints() == nameList[j].returnPoints()) {
-					state = true;
-				}
+		for (int i = 0; i < numberOfContestants - 1; i++) {
+			if (nameList[i].returnPoints() == nameList[i + 1].returnPoints()) {
+				state = true;
 			}
+			i++;
 		}
 		return state;
 	}
@@ -319,7 +323,7 @@ public class SystemCommands {
 	private void orderByPoints() {
 		for (int i = 1; i < numberOfContestants; i++) {
 			for (int j = numberOfContestants - 1; j >= i; j--) {
-				if (nameList[j - 1].returnPoints() <= nameList[j].returnPoints()) {
+				if (nameList[j - 1].returnPoints() < nameList[j].returnPoints()) {
 					Contestant tmp = nameList[j - 1];
 					nameList[j - 1] = nameList[j];
 					nameList[j] = tmp;
@@ -339,30 +343,37 @@ public class SystemCommands {
 			}
 		}
 	}
-	
+
 	public int getMaxPrize() {
 		int max = 0;
 		for (int i = 0; i < numberOfContestants; i++) {
 			if (contestants[i].returnEuros() > max) {
 				max = contestants[i].returnEuros();
 			}
-		} return max;
+		}
+		return max;
 	}
-	
+
 	private int getTiedContestants(int maxPrize) {
 		int counter = 0;
 		int tmp = nameList[0].returnEuros();
-		for(int i = 0; i < numberOfContestants; i++) {
-			if(tmp == nameList[i].returnEuros()) {
+		for (int i = 0; i < numberOfContestants; i++) {
+			if (tmp == nameList[i].returnEuros()) {
 				counter++;
 			}
 		}
 		return counter;
 	}
-	
+
 	private void updateNameList() {
 		for (int i = 0; i < numberOfContestants; i++) { // faz a mesma coisa que o clone
 			nameList[i] = contestants[i];
 		}
 	}
+
+	/*
+	 * for (int i = 1; i < numberOfContestants; i++) { for (int j =
+	 * numberOfContestants - 1; j >= i; j--) { if (nameList[j - 1].returnPoints() ==
+	 * nameList[j].returnPoints()) { state = true; } } }
+	 */
 }
