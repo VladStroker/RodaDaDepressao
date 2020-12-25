@@ -54,7 +54,7 @@ public class Main {
 		file.close();
 	}
 
-	// Adiciona um número 'n' de concorrentes
+	// Adiciona um nÃºmero 'n' de concorrentes
 	private static void addContestants(SystemCommands game, Scanner input, int numberOfContestants) {
 		for (int i = 0; i < numberOfContestants; i++) {
 			game.addContestant(input.nextLine());
@@ -73,7 +73,7 @@ public class Main {
 	}
 
 	/**
-	 * verifica as possibilidades da opção puzzle
+	 * verifica as possibilidades da opÃ§Ã£o puzzle
 	 * 
 	 * @pre: guess != null && 0 < guess.length() < 100
 	 */
@@ -144,7 +144,7 @@ public class Main {
 	 * 
 	 */
 
-	// irá executar uma das opções escolhidas pelo utilizador
+	// irÃ¡ executar uma das opÃ§Ãµes escolhidas pelo utilizador
 	private static void executeOption(Scanner input, String option, SystemCommands game, SecretIterator s1) {
 		switch (option) {
 
@@ -212,10 +212,11 @@ public class Main {
 }
 
 /*
- * Adicionar condição if no comando pontos implementar splitPrize Ao acabar a
+ * Adicionar condiÃ§Ã£o if no comando pontos implementar splitPrize Ao acabar a
  * ronda automaticamente incrementar os pontos por 6000 ( podemos por no
  * nextRound() if statement, se for a ultima ronda, podemos aumentar os pontos,
  * tinhamos de verificar se estavam empatados
  */
 
-// temos que adicionar o limite de jogadores?? no maximo so ha 4 e no max so ha 10 segredos. É para implemtar?
+// temos que adicionar o limite de jogadores?? no maximo so ha 4 e no max so ha 10 segredos. Ã‰ para implemtar?
+// Vladys 25/12 nÃ£o Ã© necessÃ¡rio implementar isso basta dizer isso na pre condiÃ§Ã£o que a length dos arrays nao pode passar de 4 e 10
