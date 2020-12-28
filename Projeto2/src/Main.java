@@ -30,28 +30,39 @@ public class Main {
 		}
 	}
 
-	private static void addSecrets(Scanner file, SystemCommands game, int[] linesOfTheFile) {
+	private static void addSecrets(Scanner file, SystemCommands game, int[] linesOfTheFile, Scanner filehelp) {
+		int lines = 0;	
+		while(filehelp.hasNextLine()) {
+			lines++;
+			filehelp.nextLine();
+		}
+		filehelp.close();
+		
 		int nrOfSecrets = 0;
 		int counter = 0;
 		int i = 0;
 		int a = 0;
-		String[] copy = new String[10000000];
+		String[] copy = new String[lines];
 		while (file.hasNextLine()) {
 			copy[i] = file.nextLine();
 			i++;
 		}
+		
+		
 		while (nrOfSecrets != linesOfTheFile.length) {
 
 			if (linesOfTheFile[a] == counter) {
-				game.addSecret(copy[counter - 1]);
+				game.addSecret(copy[counter-1]);
 				counter = 0;
 				nrOfSecrets++;
 				a++;
 			} else {
 				counter++;
-			}
+			} 
+			
 		}
 		file.close();
+	
 	}
 
 	// Adiciona um número 'n' de concorrentes
@@ -176,9 +187,11 @@ public class Main {
 
 	public static void main(String[] args) throws FileNotFoundException {
 
-		String fileName = "topSecret.txt";
+		String fileName = "\\Users\\vlady\\Documents\\topSecret.txt";
 		FileReader reader = new FileReader(fileName);
+		FileReader reader2 = new FileReader(fileName);
 		Scanner file = new Scanner(reader);
+		Scanner filehelp = new Scanner(reader2);
 		Scanner input = new Scanner(System.in);
 
 		int numberOfRounds = input.nextInt();
@@ -190,7 +203,7 @@ public class Main {
 
 		getSecretLines(linesOfTheFile, numberOfRounds, input);
 
-		addSecrets(file, game, linesOfTheFile);
+		addSecrets(file, game, linesOfTheFile,filehelp);
 		input.nextLine();
 
 		addContestants(game, input, numberOfContestants);
