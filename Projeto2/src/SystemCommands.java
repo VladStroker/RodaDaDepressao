@@ -12,16 +12,15 @@ public class SystemCommands {
 	private static final int BONUS = 1000; // valor de pontos a adicionar caso o palpite esteja correto
 	private static final int FAIL = 2000; // valor de pontos a subtrair caso o palpite esteja incorreto
 	/** Variáveis de instância **/
-	private int secretCount, contestantCount, round, maxPoints; // pontos do concorrente
+	private int secretCount, contestantCount; // pontos do concorrente
 	private Secret[] secrets;
 	private Contestant[] contestants, nameList;
-	private int numberOfRounds, numberOfContestants;
+	private int numberOfRounds, numberOfContestants, round;
 	private ContestantIterator contestantIt;
 	private SecretIterator secretIt;
 
 	/**
 	 * Construtor
-	 * 
 	 * @param ---> segredo do jogo
 	 * @pre: 1 < name.length() < 40 && name != null
 	 */
@@ -59,16 +58,12 @@ public class SystemCommands {
 		contestantCount++;
 	}
 
-	/*
-	 * mudança de ronda vai crashar quando chegar a ronda 5 de 4 por exemplo //
-	 * agora talvez não porque o iterador tem de ter um próximo
-	 */
+	
 	public void nextRound() {
 		if (secretIt.currentS().getSecret().equals(secretIt.currentS().puzzle()) && secretIt.hasNext()) {
 			contestantIt.currentC().updateMoney(contestantIt.currentC().returnPoints());
 			contestantIt.currentC().incRoundsWon();
 			resetPoints();
-			round++;
 			nextContestant();
 			secretIt.next();
 			updateNameList();
@@ -77,26 +72,17 @@ public class SystemCommands {
 				whoIsTheWinner();
 			}
 		}
-		// limpar os pontos e pô-los como dinheiro a serio
 	}
 
-	// mudança de concorrente
 	/*
-	 * public void nextContestant() { if (!contestantIt.hasNext()) { contestantIt =
-	 * iteratorOfContestants(); } else {
-	 * 
-	 * contestantIt.next(); } }
 	 */
-
 	public void nextContestant() {
 		contestantIt.next();
 		if (!contestantIt.hasNext()) {
 			contestantIt.resetContestant();
-			// contestantIt.resetContestant(); // currentC = 0; } }
 		}
 	}
 
-	// while(contestantIt.hasNext()) {
 
 	/**
 	 * verificação se a palavra foi adivinhada por completo
@@ -121,9 +107,7 @@ public class SystemCommands {
 	}
 
 	/**
-	 * verificação se a letra introduzida pelo utilizador pertence de 'a' até 'z'
-	 * minuscula
-	 * 
+	 * verificação se a letra introduzida pelo utilizador é uma letra mínuscula
 	 * @param letter ---> letra introduzida pelo utilizador
 	 * @return true ---> caso a letra pertença entre 'a' e 'z'
 	 * @pre: letter != null && 0 < letter.length() < 40
@@ -134,18 +118,16 @@ public class SystemCommands {
 	}
 
 	/**
-	 * 
 	 * @param letter ---> letra introduzida pelo utilizador
 	 * @return true ---> caso ele detecte uma letra que já foi descoberta
 	 * @pre: letter != null && 0 < letter.length() < 40
 	 */
-
+	
 	public boolean isLetterRepeated(char letter) {
 		return secretIt.currentS().RepeatedLetter(letter);
 	}
 
 	/**
-	 * 
 	 * @param letter ---> letra introduzida pelo utilizador
 	 * @return true ---> se a letra existir no segredo
 	 * @pre: letter != null && 0 < letter.length() < 40
@@ -155,19 +137,26 @@ public class SystemCommands {
 	}
 
 	/**
-	 * @param letter         ---> letra introduzida pelo utilizador
+	 * @param letter ---> letra introduzida pelo utilizador
 	 * @param numberRoulette ---> número escolhido na roleta
 	 * @pre: letter != null && 0 < letter.length() < 40 && numberRoulete > 0
 	 */
 
 	public void pointsAdd(String letter, int numberRoulete) {
 		secretIt.currentS().searchChar(letter.charAt(0));
-		// secrets[round].detectCharacter(letter.charAt(0));
 		int value = numberRoulete * secretIt.currentS().getCounter();
-		contestantIt.currentC().updatePoints(value);// adição dos pontos quando a pessoa acerta na letra
+		contestantIt.currentC().updatePoints(value);
 		updateNameList();
 	}
 
+	public void sortContestants() {
+		updateNameList();
+		orderAlphabetically();
+		orderByPoints();
+		orderByRoundsWon();
+		orderByPrize();
+	}
+	
 	/**
 	 * subtração dos pontos caso o utilizador não adivinhou a letra
 	 * 
@@ -179,13 +168,6 @@ public class SystemCommands {
 		updateNameList();
 	}
 
-	public void sortContestants() {
-		updateNameList();
-		orderAlphabetically();
-		orderByPoints();
-		orderByRoundsWon();
-		orderByPrize();
-	}
 
 	public Contestant[] getNames() {
 		return nameList; // nameList
@@ -193,7 +175,6 @@ public class SystemCommands {
 
 	/**
 	 * vai devolver o painel criado
-	 * 
 	 * @return segredo em forma de painel
 	 */
 	public String getThePanel() {
@@ -219,7 +200,7 @@ public class SystemCommands {
 		contestantIt.currentC().updatePoints(BONUS);
 	}
 
-	public int getContestant() {
+	public int maxContestants() {
 		return numberOfContestants;
 	}
 
@@ -227,7 +208,7 @@ public class SystemCommands {
 		return round;
 	}
 
-	// esta função basicamente vai devolver o maior premio existente
+	// esta função vai devolver o maior premio existente
 	private void whoIsTheWinner() {
 		int maxPrize = getMaxPrize();
 		if (!tiedMaxPrize(maxPrize)) {

@@ -14,10 +14,6 @@ public class Main {
 	private static final String PONTOS = "pontos";
 	private static final String SAIR = "sair";
 	private static final String NAO_ACABOU = "O jogo ainda nao tinha terminado";
-	private static final String PARABENS = "Parabens!";
-	private static final String MOEDA = "euros";
-	private static final String GANHOU = "Ganhou";
-	private static final String PERDEU = "Infelizmente nao ganhou dinheiro";
 	private static final String VALOR_INVALIDO = "Valor invalido";
 	private static final String LETRA_INVALIDA = "Letra invalida";
 	private static final String JOGO_JA_TERMINOU = "O jogo terminou";
@@ -73,7 +69,7 @@ public class Main {
 	}
 
 	/**
-	 * verifica as possibilidades da opção puzzle
+	 * verifica as possibilidades da opcao puzzle
 	 * 
 	 * @pre: guess != null && 0 < guess.length() < 100
 	 */
@@ -92,7 +88,7 @@ public class Main {
 		}
 	}
 
-	private static void roletaOutcomes(Scanner input, SystemCommands game) {
+	private static void roletaVerification(Scanner input, SystemCommands game) {
 		int roulettePoints = input.nextInt();
 		String letter = input.nextLine();
 		letter = letter.trim();
@@ -100,17 +96,16 @@ public class Main {
 			System.out.println(VALOR_INVALIDO);
 		} else if (!game.isLetter(letter.charAt(0)) || letter.length() != 1) {
 			System.out.println(LETRA_INVALIDA);
-		} else if (game.getCurrentRound() == game.getMaxRounds()) { // game.isCompleted() &&
-																	// game.isLetter(letter.charAt(0)) ||
+		} else if (game.getCurrentRound() == game.getMaxRounds()) {
 			System.out.println(JOGO_JA_TERMINOU);
 		} else {
-			verification(roulettePoints, letter, game);
+			correctGuess(roulettePoints, letter, game);
 		}
 
 	}
 
 	// verifica se a pessoa acertou na letra ou errou e adiciona ou remove pontos
-	private static void verification(int points, String letter, SystemCommands game) {
+	private static void correctGuess(int points, String letter, SystemCommands game) {
 		letter = letter.trim();
 		if (!game.isLetterRepeated(letter.charAt(0)) && game.isTheLetterInTheSecret(letter)) {
 			game.pointsAdd(letter, points);
@@ -130,7 +125,7 @@ public class Main {
 	private static void printPoints(SystemCommands game) {
 		game.sortContestants();
 		Contestant[] nameList = game.getNames();
-		for (int i = 0; i < game.getContestant(); i++) {
+		for (int i = 0; i < game.maxContestants(); i++) {
 			System.out.println(nameList[i].returnName() +": " + nameList[i].returnEuros() + " euros; " 
 					+ nameList[i].returnPoints() + " pontos");
 		}
@@ -149,7 +144,7 @@ public class Main {
 		switch (option) {
 
 		case ROLETA:
-			roletaOutcomes(input, game);
+			roletaVerification(input, game);
 			break;
 		case PUZZLE:
 			checkPuzzle(input, game);
@@ -201,10 +196,7 @@ public class Main {
 		String option;
 		do {
 			option = input.next();
-			executeOption(input, option, game, secretIt); // tinhamos adicionado aquilo algo no argumento e passado para
-															// as
-															// outras coisas
-
+			executeOption(input, option, game, secretIt); 			
 		} while (!option.equals(SAIR));
 		input.close();
 
