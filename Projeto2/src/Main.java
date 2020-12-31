@@ -14,10 +14,6 @@ public class Main {
 	private static final String PONTOS = "pontos";
 	private static final String SAIR = "sair";
 	private static final String NAO_ACABOU = "O jogo ainda nao tinha terminado";
-	private static final String PARABENS = "Parabens!";
-	private static final String MOEDA = "euros";
-	private static final String GANHOU = "Ganhou";
-	private static final String PERDEU = "Infelizmente nao ganhou dinheiro";
 	private static final String VALOR_INVALIDO = "Valor invalido";
 	private static final String LETRA_INVALIDA = "Letra invalida";
 	private static final String JOGO_JA_TERMINOU = "O jogo terminou";
@@ -29,15 +25,35 @@ public class Main {
 
 		}
 	}
-
+	
+	/*private static void bubbleSort(int[] linesOfTheFile) {
+		int tmp [] = new int[linesOfTheFile.length]; 
+		for(int w = 0; w < linesOfTheFile.length; w++) {
+			tmp[w] = linesOfTheFile[w];
+		}
+		int count = 0;
+		for (int i=1; i < count; i++) {
+			for(int j = count - 1; j >= i; j--) {
+				if(tmp[j-1] > tmp[j]) {
+					int aux = tmp[j-1];
+					tmp[j-1] = tmp[j];
+					tmp[j] = aux;
+				}
+			}
+		}
+		for(int w = 0; w < linesOfTheFile.length; w++) {
+			System.out.println(tmp[w]);
+		}
+	}*/
+	
+	// e se criar aqui uma variavel temporaria ordenada e percorrer aquilo uma unica vez
 	private static void addSecrets(Scanner file, SystemCommands game, int[] linesOfTheFile, Scanner filehelp) {
 		int lines = 0;	
 		while(filehelp.hasNextLine()) {
 			lines++;
 			filehelp.nextLine();
 		}
-		filehelp.close();
-		
+		filehelp.close();	
 		int nrOfSecrets = 0;
 		int counter = 0;
 		int i = 0;
@@ -47,22 +63,31 @@ public class Main {
 			copy[i] = file.nextLine();
 			i++;
 		}
+		//bubbleSort(linesOfTheFile);
 		
-		
+		/*while(nrOfSecrets != linesOfTheFile.length) {
+			if(linesOfTheFile[a] == counter) { // counter é a linha onde estamos
+				game.addSecret(copy[counter-1]);
+				counter++;
+				nrOfSecrets++;
+				a++;
+			}
+			else {
+				counter++;
+			}
+		}*/
 		while (nrOfSecrets != linesOfTheFile.length) {
 
 			if (linesOfTheFile[a] == counter) {
 				game.addSecret(copy[counter-1]);
-				counter = 0;
+				counter = 0; 
 				nrOfSecrets++;
 				a++;
 			} else {
 				counter++;
-			} 
-			
+			} 		
 		}
 		file.close();
-	
 	}
 
 	// Adiciona um número 'n' de concorrentes
@@ -73,6 +98,7 @@ public class Main {
 	}
 
 	// verifica as possibilidades no fim do jogo
+	// quando ambos os premios sao zero o premio final devia ser 3000 se for 2 concorrentes e por  ai em diante ele diz que o jogo nao acabou
 	private static void checkQuitOutcome(SystemCommands game) {
 		game.sortContestants();
 		if (game.getCurrentRound() != game.getMaxRounds()) {
@@ -92,7 +118,7 @@ public class Main {
 	private static void checkPuzzle(Scanner input, SystemCommands game) {
 		String guess = input.nextLine();
 		guess = guess.trim();
-		if (game.isCompleted() && game.getCurrentRound() == game.getMaxRounds()) {
+		if (game.getCurrentRound() == game.getMaxRounds()) { 
 			System.out.println("O jogo terminou");
 		} else if (game.isGuessCorrect(guess)) {
 			game.sucess();
@@ -187,7 +213,7 @@ public class Main {
 
 	public static void main(String[] args) throws FileNotFoundException {
 
-		String fileName = "\\Users\\vlady\\Documents\\topSecret.txt";
+		String fileName = "topSecret.txt";
 		FileReader reader = new FileReader(fileName);
 		FileReader reader2 = new FileReader(fileName);
 		Scanner file = new Scanner(reader);

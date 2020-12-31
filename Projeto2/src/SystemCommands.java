@@ -12,7 +12,7 @@ public class SystemCommands {
 	private static final int BONUS = 1000; // valor de pontos a adicionar caso o palpite esteja correto
 	private static final int FAIL = 2000; // valor de pontos a subtrair caso o palpite esteja incorreto
 	/** Variáveis de instância **/
-	private int secretCount, contestantCount, round, maxPoints; // pontos do concorrente
+	private int secretCount, contestantCount, round; // pontos do concorrente
 	private Secret[] secrets;
 	private Contestant[] contestants, nameList;
 	private int numberOfRounds, numberOfContestants;
@@ -104,7 +104,7 @@ public class SystemCommands {
 	 * @return true ---> caso o segredo estiver totalmente adivinhado
 	 */
 	public boolean isCompleted() {
-		return secretIt.currentS().completed();
+		return secretIt.currentS().completed(); 
 
 	}
 

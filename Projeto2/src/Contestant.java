@@ -8,6 +8,7 @@ public class Contestant {
 	public Contestant(String a) {
 		name = a;
 		points = 0;
+		roundsWon = 0;
 	}
 
 	// Devolve o nome
