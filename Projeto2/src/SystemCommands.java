@@ -1,16 +1,18 @@
 /**
  * @authors Ricardo e Vladyslav
  * 
- *          esta classe é o nosso sistema e irá lidar também com a distribuição
- *          de pontos e realizará uns métodos de verificação de condições
+ *          Esta classe é o nosso sistema e irá lidar também com a distribuição
+ *          de pontos e realizará métodos de verificação de condições
  * 
  * 
  */
 
 public class SystemCommands {
 	/** Constantes **/
+	private static final int WINNER_BONUS = 6000;
 	private static final int BONUS = 1000; // valor de pontos a adicionar caso o palpite esteja correto
 	private static final int FAIL = 2000; // valor de pontos a subtrair caso o palpite esteja incorreto
+	
 	/** Variáveis de instância **/
 	private int secretCount, contestantCount, round; // pontos do concorrente
 	private Secret[] secrets;
@@ -36,35 +38,44 @@ public class SystemCommands {
 		nameList = new Contestant[nrOfContestants];
 	}
 
+	// Criação de um iterador de segredos
 	public SecretIterator iteratorOfSecrets() {
 		secretIt = new SecretIterator(secrets, secretCount);
 		return secretIt;
 	}
 
+	// Criação de um iterador de concorrentes
 	public ContestantIterator iteratorOfContestants() {
 		contestantIt = new ContestantIterator(contestants, contestantCount);
 		return contestantIt;
 	}
 
-	// Construtor de segredos
+	/** 
+	 * Adiona segredos
+	 * @param secret
+	 * @pre secret != null
+	 */
 	public void addSecret(String secret) {
 		secrets[secretCount] = new Secret(secret);
 		secrets[secretCount].createPanel(secret);
 		secretCount++;
 	}
 
-	// Construtor de contestants
+	/**
+	 *  Construtor de contestants
+	 * @param name
+	 * @pre name != null
+	 */
 	public void addContestant(String name) {
 		contestants[contestantCount] = new Contestant(name);
 		contestantCount++;
 	}
 
 	/*
-	 * mudança de ronda vai crashar quando chegar a ronda 5 de 4 por exemplo //
-	 * agora talvez não porque o iterador tem de ter um próximo
+	 * Função responsável pela troca de ronda
 	 */
 	public void nextRound() {
-		if (secretIt.currentS().getSecret().equals(secretIt.currentS().puzzle()) && secretIt.hasNext()) {
+		if (secretIt.currentS().getSecret().equals(secretIt.currentS().returnPanel()) && secretIt.hasNext()) {
 			contestantIt.currentC().updateMoney(contestantIt.currentC().returnPoints());
 			contestantIt.currentC().incRoundsWon();
 			resetPoints();
@@ -77,29 +88,19 @@ public class SystemCommands {
 				whoIsTheWinner();
 			}
 		}
-		// limpar os pontos e pô-los como dinheiro a serio
+
 	}
 
-	// mudança de concorrente
-	/*
-	 * public void nextContestant() { if (!contestantIt.hasNext()) { contestantIt =
-	 * iteratorOfContestants(); } else {
-	 * 
-	 * contestantIt.next(); } }
-	 */
-
+	// mudança de concorrente para o próximo
 	public void nextContestant() {
 		contestantIt.next();
 		if (!contestantIt.hasNext()) {
 			contestantIt.resetContestant();
-			// contestantIt.resetContestant(); // currentC = 0; } }
 		}
 	}
-
-	// while(contestantIt.hasNext()) {
-
+	
 	/**
-	 * verificação se a palavra foi adivinhada por completo
+	 * verifica se a palavra foi adivinhada por completo
 	 * 
 	 * @return true ---> caso o segredo estiver totalmente adivinhado
 	 */
@@ -109,7 +110,7 @@ public class SystemCommands {
 	}
 
 	/**
-	 * verificação se o palpite do utilizador é correto
+	 * verifica se o palpite do utilizador é correto
 	 * 
 	 * @param guess ---> palpite do utilizador
 	 * @return true ---> se o palpite for correto
@@ -122,7 +123,7 @@ public class SystemCommands {
 
 	/**
 	 * verificação se a letra introduzida pelo utilizador pertence de 'a' até 'z'
-	 * minuscula
+	 * e se é minúscula
 	 * 
 	 * @param letter ---> letra introduzida pelo utilizador
 	 * @return true ---> caso a letra pertença entre 'a' e 'z'
@@ -134,18 +135,18 @@ public class SystemCommands {
 	}
 
 	/**
-	 * 
+	 * verifica se a letra ja foi adivinhada
 	 * @param letter ---> letra introduzida pelo utilizador
 	 * @return true ---> caso ele detecte uma letra que já foi descoberta
 	 * @pre: letter != null && 0 < letter.length() < 40
 	 */
 
 	public boolean isLetterRepeated(char letter) {
-		return secretIt.currentS().RepeatedLetter(letter);
+		return secretIt.currentS().repeatedLetter(letter);
 	}
 
 	/**
-	 * 
+	 * verifica se a letra está no segredo
 	 * @param letter ---> letra introduzida pelo utilizador
 	 * @return true ---> se a letra existir no segredo
 	 * @pre: letter != null && 0 < letter.length() < 40
@@ -155,6 +156,7 @@ public class SystemCommands {
 	}
 
 	/**
+	 * adiciona pontos
 	 * @param letter         ---> letra introduzida pelo utilizador
 	 * @param numberRoulette ---> número escolhido na roleta
 	 * @pre: letter != null && 0 < letter.length() < 40 && numberRoulete > 0
@@ -162,7 +164,6 @@ public class SystemCommands {
 
 	public void pointsAdd(String letter, int numberRoulete) {
 		secretIt.currentS().searchChar(letter.charAt(0));
-		// secrets[round].detectCharacter(letter.charAt(0));
 		int value = numberRoulete * secretIt.currentS().getCounter();
 		contestantIt.currentC().updatePoints(value);// adição dos pontos quando a pessoa acerta na letra
 		updateNameList();
@@ -179,6 +180,7 @@ public class SystemCommands {
 		updateNameList();
 	}
 
+	// Ordenação dos concorrentes
 	public void sortContestants() {
 		updateNameList();
 		orderAlphabetically();
@@ -187,6 +189,7 @@ public class SystemCommands {
 		orderByPrize();
 	}
 
+	// Devolve a variavel nameList, que tem os concorrentes ordenados
 	public Contestant[] getNames() {
 		return nameList; // nameList
 	}
@@ -197,55 +200,67 @@ public class SystemCommands {
 	 * @return segredo em forma de painel
 	 */
 	public String getThePanel() {
-		return secretIt.currentS().puzzle();
+		return secretIt.currentS().returnPanel();
 	}
 
+	// Vai devolver o numero total de rondas no jogo
 	public int getMaxRounds() {
 		return numberOfRounds;
 	}
 
+	// Vai devolver o ultimo segredo usado no jogo
 	public String getLastSecret() {
 		return secretIt.previousS().getSecret();
 	}
 
-	// desconta pontos quando o utilizador erra no palpite
-
+	// Desconta pontos quando o utilizador erra no palpite
 	public void fail() {
 		contestantIt.currentC().updatePoints(-FAIL);
 	}
 
-	// adição de pontos quando o utilizador acerta no palpite
+	// Adição de pontos quando o utilizador acerta no palpite
 	public void sucess() {
 		contestantIt.currentC().updatePoints(BONUS);
 	}
 
+	/**
+	 *  
+	 * @return ---> Devolve o numero de concorrentes
+	 * @pre numberOfContestants > 0 && numberOfContestants < 4
+	 */
 	public int getContestant() {
 		return numberOfContestants;
 	}
 
+	/** 
+	 * 
+	 * @return ---> Devolve a ronda atual do jogo
+	 */
 	public int getCurrentRound() {
 		return round;
 	}
 
-	// esta função basicamente vai devolver o maior premio existente
+	// Adiciona a pontuação bónus a/aos concorrentes com o maior valor de euros
 	private void whoIsTheWinner() {
 		int maxPrize = getMaxPrize();
 		if (!tiedMaxPrize(maxPrize)) {
-			nameList[0].updateMoney(6000);
+			nameList[0].updateMoney(WINNER_BONUS);
 		} else {
 			int split = getTiedContestants(maxPrize);
 			for (int i = 0; i < split; i++) {
-				nameList[i].updateMoney(6000 / split);
+				nameList[i].updateMoney(WINNER_BONUS / split);
 			}
 		}
 	}
 
+	// Este função reinicia todos os pontos dos concorrentes
 	private void resetPoints() {
 		for (int i = 0; i < numberOfContestants; i++) {
 			contestants[i].resetPoints();
 		}
 	}
 
+	// Aqui ordenamos os concorrentes por ordem decrescente de dinheiro
 	private void orderByPrize() {
 		for (int i = 1; i < numberOfContestants; i++) {
 			for (int j = numberOfContestants - 1; j >= i; j--) {
@@ -258,6 +273,7 @@ public class SystemCommands {
 		}
 	}
 
+	// Aqui ordenamos os concorrentes por ordem decrescente de rondas ganhas
 	private void orderByRoundsWon() {
 		for (int i = 1; i < numberOfContestants; i++) {
 			for (int j = numberOfContestants - 1; j >= i; j--) {
@@ -270,6 +286,7 @@ public class SystemCommands {
 		}
 	}
 
+	// Aqui ordenamos os concorrentes por ordem decrescente de pontos ganhos
 	private void orderByPoints() {
 		for (int i = 1; i < numberOfContestants; i++) {
 			for (int j = numberOfContestants - 1; j >= i; j--) {
@@ -282,6 +299,7 @@ public class SystemCommands {
 		}
 	}
 
+	// Aqui ordenamos os concorrentes por ordem alfabetica
 	private void orderAlphabetically() {
 		for (int i = 1; i < numberOfContestants; i++) {
 			for (int j = numberOfContestants - 1; j >= i; j--) {
@@ -294,6 +312,7 @@ public class SystemCommands {
 		}
 	}
 
+	// Aqui vamos buscar o maior valor em dinheiro ganho no jogo
 	public int getMaxPrize() {
 		int max = 0;
 		for (int i = 0; i < numberOfContestants; i++) {
@@ -304,6 +323,11 @@ public class SystemCommands {
 		return max;
 	}
 
+	/** Este metodo vai devolver quantos concorrentes estao empatados com o premio maximo
+	 * 
+	 * @param maxPrize ---> Maior prémio do jogo
+	 * @return ---> numero de concorrentes que estão empatados com o premio maximo
+	 */
 	private int getTiedContestants(int maxPrize) {
 		int counter = 0;
 		int tmp = nameList[0].returnEuros();
@@ -315,40 +339,26 @@ public class SystemCommands {
 		return counter;
 	}
 
+	//Atualiza a name list com as informações da variavel contestants[]
 	private void updateNameList() {
-		for (int i = 0; i < numberOfContestants; i++) { // faz a mesma coisa que o clone
+		for (int i = 0; i < numberOfContestants; i++) { 
 			nameList[i] = contestants[i];
 		}
 	}
 	
+	/** Verifica se existe empate com premio maximo
+	 * 
+	 * @param maxPrize ---> Maior prémio do jogo
+	 * @return ---> verdadeiro caso se verifique empate no prémio maximo
+	 */
 	private boolean tiedMaxPrize(int maxPrize) {
 		boolean state = false;
-		for(int i = 1; i < numberOfContestants; i++) {
+		for(int i = 1; i < numberOfContestants; i++) { 
 			if(maxPrize == nameList[i].returnEuros()) {
 				state = true;
 			}
 		}return state;
 	}
 
-	/*
-	 * if (tiedPrize()) {
-			if (tiedRoundsWon()) {
-				if (tiedPoints()) {
-					orderAlphabetically();
-				} else {
-					orderAlphabetically();
-					orderByPoints();
-				}
-			} else {
-				orderAlphabetically();
-				orderByPoints();
-				orderByRoundsWon();
-			}
-		} else {
-			orderAlphabetically();
-			orderByPoints();
-			orderByRoundsWon();
-			orderByPrize();
-		}
-	 */
+	
 }

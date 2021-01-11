@@ -65,7 +65,7 @@ public class Secret {
 			temppanel.toString();
 			panel = String.valueOf(temppanel);
 		}
-		//return panel;
+		
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class Secret {
 	 * 
 	 */
 
-	public boolean RepeatedLetter(char letter) {
+	public boolean repeatedLetter(char letter) {
 		char[] temppanel = panel.toCharArray();
 		int count = 0;
 		for (int u = 0; u < panel.length(); u++) {
@@ -90,7 +90,7 @@ public class Secret {
 		return (count > 0);
 	}
 	/**
-	 * verificar se a letra introduzida pertence ao segredo
+	 * verifica se a letra introduzida pertence ao segredo
 	 * 
 	 * @param letter ---> letra introduzida pelo utilizador
 	 * @return true ---> caso a letra pertença ao segredo
@@ -123,20 +123,16 @@ public class Secret {
 	}
 
 	/**
-	 * verificar se o segredo já foi descoberto por completo
+	 * verifica se o segredo já foi descoberto por completo
 	 * 
 	 * @return true ---> caso o segredo foi totalmente adivinhado
 	 */
 	public boolean completed() {
-		if (!panel.equals(secret)) {
-			return false;
-		} else {
-			return true;
-		}
+		return (panel.equals(secret));
 	}
 
 	/**
-	 * devolver a variável counter
+	 * devolve a variável counter
 	 * 
 	 * @return counter ---> número de vezes que a letra é repetida no segredo
 	 */
@@ -150,9 +146,9 @@ public class Secret {
 	}
 
 	/**
-	 * @return panel ---> devolver o painel
+	 * @return panel ---> Devolve o painel
 	 */
-	public String puzzle() {
+	public String returnPanel() {
 		return panel;
 	}
 	

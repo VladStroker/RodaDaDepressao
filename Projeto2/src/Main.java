@@ -7,7 +7,7 @@ import java.io.*;
  *
  */
 public class Main {
-
+	//Contantes
 	private static final String ROLETA = "roleta";
 	private static final String PUZZLE = "puzzle";
 	private static final String PAINEL = "painel";
@@ -19,75 +19,54 @@ public class Main {
 	private static final String JOGO_JA_TERMINOU = "O jogo terminou";
 	private static final String COMANDO_INVALIDO = "Comando invalido";
 
-	private static void getSecretLines(int[] linesOfTheFile, int numberOfRounds, Scanner input) {
+	//Vai preencher a array com as linhas de segredos desejados
+	private static void registerSecretLines(int[] linesOfTheFile, int numberOfRounds, Scanner input) {
 		for (int i = 0; i < numberOfRounds; i++) {
 			linesOfTheFile[i] = input.nextInt();
 
 		}
 	}
-	
-	/*private static void bubbleSort(int[] linesOfTheFile) {
-		int tmp [] = new int[linesOfTheFile.length]; 
-		for(int w = 0; w < linesOfTheFile.length; w++) {
-			tmp[w] = linesOfTheFile[w];
+
+	//Adiciona os segredos de acordo com as linhas pedidas pelo utilizador 
+	private static void addSecrets(Scanner file, SystemCommands game, int[] linesOfTheFile) {
+		int line = 0;
+		int a = 0;
+		boolean enable = false;
+		int[] registeredLines = new int[linesOfTheFile.length];
+		int z = 0;
+		String temp;
+		String[] secrets = new String[linesOfTheFile.length];
+		while (secrets.length != linesOfTheFile.length || file.hasNextLine()) {
+			line++;
+			enable = false;
+			for (int y = 0; y < linesOfTheFile.length; y++) {
+				if (linesOfTheFile[y] == line) {
+					temp = file.nextLine();
+					secrets[a] = temp;
+					a++;
+					enable = true;
+					registeredLines[z] = line;
+					z++;
+				}
+			}
+			if (enable == false) {
+				file.nextLine();
+			}
 		}
-		int count = 0;
-		for (int i=1; i < count; i++) {
-			for(int j = count - 1; j >= i; j--) {
-				if(tmp[j-1] > tmp[j]) {
-					int aux = tmp[j-1];
-					tmp[j-1] = tmp[j];
-					tmp[j] = aux;
+		file.close();
+		
+		//Vai criar uma array ordenada pela ordem de input dos segredos
+		String[] copy = new String[linesOfTheFile.length];
+		for (int k = 0; k < linesOfTheFile.length; k++) {
+			for (int w = 0; w < linesOfTheFile.length; w++) {
+				if (linesOfTheFile[k] == registeredLines[w]) {
+					copy[k] = secrets[w];
 				}
 			}
 		}
-		for(int w = 0; w < linesOfTheFile.length; w++) {
-			System.out.println(tmp[w]);
+		for (int w = 0; w < linesOfTheFile.length; w++) {
+			game.addSecret(copy[w]);
 		}
-	}*/
-	
-	// e se criar aqui uma variavel temporaria ordenada e percorrer aquilo uma unica vez
-	private static void addSecrets(Scanner file, SystemCommands game, int[] linesOfTheFile, Scanner filehelp) {
-		int lines = 0;	
-		while(filehelp.hasNextLine()) {
-			lines++;
-			filehelp.nextLine();
-		}
-		filehelp.close();	
-		int nrOfSecrets = 0;
-		int counter = 0;
-		int i = 0;
-		int a = 0;
-		String[] copy = new String[lines];
-		while (file.hasNextLine()) {
-			copy[i] = file.nextLine();
-			i++;
-		}
-		//bubbleSort(linesOfTheFile);
-		
-		/*while(nrOfSecrets != linesOfTheFile.length) {
-			if(linesOfTheFile[a] == counter) { // counter é a linha onde estamos
-				game.addSecret(copy[counter-1]);
-				counter++;
-				nrOfSecrets++;
-				a++;
-			}
-			else {
-				counter++;
-			}
-		}*/
-		while (nrOfSecrets != linesOfTheFile.length) {
-
-			if (linesOfTheFile[a] == counter) {
-				game.addSecret(copy[counter-1]);
-				counter = 0; 
-				nrOfSecrets++;
-				a++;
-			} else {
-				counter++;
-			} 		
-		}
-		file.close();
 	}
 
 	// Adiciona um número 'n' de concorrentes
@@ -97,28 +76,25 @@ public class Main {
 		}
 	}
 
-	// verifica as possibilidades no fim do jogo
-	// quando ambos os premios sao zero o premio final devia ser 3000 se for 2 concorrentes e por  ai em diante ele diz que o jogo nao acabou
+	// Verifica as possibilidades no fim do jogo
 	private static void checkQuitOutcome(SystemCommands game) {
 		game.sortContestants();
 		if (game.getCurrentRound() != game.getMaxRounds()) {
 			System.out.println(NAO_ACABOU);
 		} else if (game.getCurrentRound() == game.getMaxRounds()) {
-			//System.out.println(PARABENS + " " + GANHOU + " " + game.getMaxPrize() + " " + MOEDA);
 			System.out.println("Parabens! O maior premio foi " + game.getMaxPrize() + " euros");
 		}
 	}
 
 	/**
-	 * verifica as possibilidades da opção puzzle
+	 * Verifica as possibilidades da opção puzzle
 	 * 
 	 * @pre: guess != null && 0 < guess.length() < 100
 	 */
-
 	private static void checkPuzzle(Scanner input, SystemCommands game) {
 		String guess = input.nextLine();
 		guess = guess.trim();
-		if (game.getCurrentRound() == game.getMaxRounds()) { 
+		if (game.getCurrentRound() == game.getMaxRounds()) {
 			System.out.println("O jogo terminou");
 		} else if (game.isGuessCorrect(guess)) {
 			game.sucess();
@@ -129,6 +105,7 @@ public class Main {
 		}
 	}
 
+	// Verifica as possibilidades da opção roleta
 	private static void roletaOutcomes(Scanner input, SystemCommands game) {
 		int roulettePoints = input.nextInt();
 		String letter = input.nextLine();
@@ -137,8 +114,7 @@ public class Main {
 			System.out.println(VALOR_INVALIDO);
 		} else if (!game.isLetter(letter.charAt(0)) || letter.length() != 1) {
 			System.out.println(LETRA_INVALIDA);
-		} else if (game.getCurrentRound() == game.getMaxRounds()) { // game.isCompleted() &&
-																	// game.isLetter(letter.charAt(0)) ||
+		} else if (game.getCurrentRound() == game.getMaxRounds()) {
 			System.out.println(JOGO_JA_TERMINOU);
 		} else {
 			verification(roulettePoints, letter, game);
@@ -146,7 +122,7 @@ public class Main {
 
 	}
 
-	// verifica se a pessoa acertou na letra ou errou e adiciona ou remove pontos
+	// Verifica se a pessoa acertou na letra ou errou e adiciona ou remove pontos consequentemente
 	private static void verification(int points, String letter, SystemCommands game) {
 		letter = letter.trim();
 		if (!game.isLetterRepeated(letter.charAt(0)) && game.isTheLetterInTheSecret(letter)) {
@@ -157,18 +133,20 @@ public class Main {
 			game.nextContestant();
 		}
 	}
-
+	
+	// Verifica se o segredo foi completo através do comando roleta
 	private static void lastPlay(SystemCommands game) {
 		if (game.isCompleted()) {
 			game.nextRound();
 		}
 	}
 
+	// Faz print aos pontos/euros dos concorrentes
 	private static void printPoints(SystemCommands game) {
 		game.sortContestants();
 		Contestant[] nameList = game.getNames();
 		for (int i = 0; i < game.getContestant(); i++) {
-			System.out.println(nameList[i].returnName() +": " + nameList[i].returnEuros() + " euros; " 
+			System.out.println(nameList[i].returnName() + ": " + nameList[i].returnEuros() + " euros; "
 					+ nameList[i].returnPoints() + " pontos");
 		}
 
@@ -213,13 +191,16 @@ public class Main {
 
 	public static void main(String[] args) throws FileNotFoundException {
 
+	
 		String fileName = "topSecret.txt";
 		FileReader reader = new FileReader(fileName);
-		FileReader reader2 = new FileReader(fileName);
 		Scanner file = new Scanner(reader);
-		Scanner filehelp = new Scanner(reader2);
 		Scanner input = new Scanner(System.in);
 
+		/**
+		 * @pre --->  0 < numberOfRounds < 4 && 0 < numberOfContestants < 10
+		 */
+		
 		int numberOfRounds = input.nextInt();
 		int numberOfContestants = input.nextInt();
 
@@ -227,9 +208,9 @@ public class Main {
 
 		int[] linesOfTheFile = new int[numberOfRounds];
 
-		getSecretLines(linesOfTheFile, numberOfRounds, input);
+		registerSecretLines(linesOfTheFile, numberOfRounds, input);
 
-		addSecrets(file, game, linesOfTheFile,filehelp);
+		addSecrets(file, game, linesOfTheFile);
 		input.nextLine();
 
 		addContestants(game, input, numberOfContestants);
@@ -240,9 +221,7 @@ public class Main {
 		String option;
 		do {
 			option = input.next();
-			executeOption(input, option, game, secretIt); // tinhamos adicionado aquilo algo no argumento e passado para
-															// as
-															// outras coisas
+			executeOption(input, option, game, secretIt); 
 
 		} while (!option.equals(SAIR));
 		input.close();
@@ -250,11 +229,4 @@ public class Main {
 	}
 }
 
-/*
- * Adicionar condição if no comando pontos implementar splitPrize Ao acabar a
- * ronda automaticamente incrementar os pontos por 6000 ( podemos por no
- * nextRound() if statement, se for a ultima ronda, podemos aumentar os pontos,
- * tinhamos de verificar se estavam empatados
- */
-
-// temos que adicionar o limite de jogadores?? no maximo so ha 4 e no max so ha 10 segredos. É para implemtar?
+//https://www.youtube.com/watch?v=gJZcdGLAgaY
